@@ -4,6 +4,7 @@ project(CA2021)
 # Executable goes to bin
 set(CMAKE_MODULE_PATH "${CA2021_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_POLICY_DEFAULT_CMP0069 NEW)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CA2021_SOURCE_DIR}/bin/$<0:>)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CA2021_SOURCE_DIR}/bin/$<0:>)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CA2021_SOURCE_DIR}/lib/$<0:>)
@@ -93,10 +94,5 @@ endif()
 # Third party libs
 add_subdirectory(extern/glad)
 add_subdirectory(extern/glfw)
-# Suppress CMP0069 warning
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF)
 add_subdirectory(extern/glm)
-if (COMPILER_SUPPORT_IPO)
-  set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
-endif()
 add_subdirectory(extern/wuffs)
