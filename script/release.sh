@@ -1,5 +1,5 @@
 #!/bin/bash
-zip -r9 HW0.zip \
+zip -r9 HW1.zip \
 extern/glad \
 extern/glfw/CMake \
 extern/glfw/deps/mingw \
@@ -12,7 +12,7 @@ extern/glm/cmake \
 extern/glm/glm \
 extern/glm/CMakeLists.txt \
 extern/glm/copying.txt \
-extern/wuffs
+extern/wuffs \
 cmake \
 include \
 src \
