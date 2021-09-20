@@ -53,10 +53,11 @@ int main() {
   glEnable(GL_COLOR_MATERIAL);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  // Setup lights
+  // TODO: Setup lights
+  // Hint: glColorMaterial, glLightfv
   glColorMaterial(GL_FRONT, GL_DIFFUSE);
   float light_pos[] = {0.0f, 0.0f, 0.0f, 1.0f};
-  float light_ambient[] = {0.1f, 0.1f, 0.1f, 1.0f};
+  float light_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};
   float light_diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
   glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
@@ -73,9 +74,10 @@ int main() {
   int current_tick = 0;
   int earth_day_speed = 1 * speed;
   int moon_speed = 28 * speed;
+  int sun_speed = moon_speed;
   int earth_year_speed = 365 * speed;
   int cycle = std::lcm(std::lcm(earth_day_speed, moon_speed), earth_year_speed);
-  float earth_year_tick = 0, earth_day_tick = 0, moon_tick = 0;
+  float earth_year_tick = 0, earth_day_tick = 0, moon_tick = 0, sun_tick = 0;
   // Camera
   graphics::camera::QuaternionCamera camera(glm::vec3(0, 0, 4));
   camera.initialize(OpenGLContext::getAspectRatio());
@@ -86,6 +88,7 @@ int main() {
     camera.move(window);
     // Update simulation tick
     (++current_tick) %= cycle;
+    sun_tick = static_cast<float>(current_tick % sun_speed) / sun_speed;
     earth_year_tick = static_cast<float>(current_tick % earth_year_speed) / earth_year_speed;
     earth_day_tick = static_cast<float>(current_tick % earth_day_speed) / earth_day_speed;
     moon_tick = static_cast<float>(current_tick % moon_speed) / moon_speed;
@@ -97,31 +100,38 @@ int main() {
     // ModelView Matrix
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(camera.getViewMatrix());
+    // Light position needs to multiply with view matrix, but not model matrix
     glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+    // Render sun, need to disable lighting since light source is actully 'inside' the sun.
+    glDisable(GL_LIGHTING);
+    glPushMatrix();
+    glRotatef(360 * sun_tick, 0, 1, 0);
+    sun_texture.bind();
+    sun.draw();
+    glPopMatrix();
+    glEnable(GL_LIGHTING);
     // Render Earth
+    // TODO: You need to setup earth's model matrix here
     glPushMatrix();
     glRotatef(360 * earth_year_tick, 0, 1, 0);
     glTranslatef(3, 0, 0);
     glPushMatrix();
-    glRotatef(360.0f * -earth_year_tick, 0, 1, 0);
+    glRotatef(360 * -earth_year_tick, 0, 1, 0);
     glRotatef(-23.5, 0, 0, 1);
-    glRotatef(360.0f * earth_day_tick, 0, 1, 0);
+    glRotatef(360 * earth_day_tick, 0, 1, 0);
+    // End
     earth_texture.bind();
     earth.draw();
-    glPopMatrix();
     // Render Moon
-    glPushMatrix();
-    glRotatef(360.0f * moon_tick, 0, 1, 0);
+    // TODO: You need to setup moon's model matrix here
+    glPopMatrix();
+    glRotatef(360 * moon_tick, 0, 1, 0);
     glTranslatef(0.35, 0, 0);
+    // End
     moon_texture.bind();
     moon.draw();
+    // TODO: Maybe you need to put some glPopMatrix here depends on your implementation.
     glPopMatrix();
-    glPopMatrix();
-    // Render sun, need to disable lighting since light source is actully 'inside' the sun.
-    glDisable(GL_LIGHTING);
-    sun_texture.bind();
-    sun.draw();
-    glEnable(GL_LIGHTING);
     // Some platform need explicit glFlush
     glFlush();
     glfwSwapBuffers(window);
