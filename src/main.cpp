@@ -46,23 +46,38 @@ int main() {
   glfwSetFramebufferSizeCallback(window, resizeCallback);
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   OpenGLContext::printSystemInfo();
-  // Legacy OpenGL need this
+  OpenGLContext::enableDebugCallback();
+  // Legacy OpenGL need these
   glEnable(GL_TEXTURE_2D);
-  // Some parameters.
-  int speed = OpenGLContext::getRefreshRate() / 5;
-  // Sphere
-  graphics::shape::Sphere earth(1, 180, 360), moon(0.273, 36, 72);
-
-  graphics::texture::Texture2D earth_texture, moon_texture;
-  moon_texture.loadPNG("../assets/texture/moon.png");
+  glEnable(GL_NORMALIZE);
+  glEnable(GL_COLOR_MATERIAL);
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  // Setup lights
+  glColorMaterial(GL_FRONT, GL_DIFFUSE);
+  float light_pos[] = {0.0f, 0.0f, 0.0f, 1.0f};
+  float light_ambient[] = {0.1f, 0.1f, 0.1f, 1.0f};
+  float light_diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
+  glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+  // Spheres
+  graphics::shape::Sphere sun(1, 180, 360), earth(0.2, 90, 180), moon(0.0546, 36, 72);
+  // Textures
+  graphics::texture::Texture2D sun_texture, earth_texture, moon_texture;
+  sun_texture.loadPNG("../assets/texture/sun.png");
   earth_texture.loadPNG("../assets/texture/earth.png");
-
+  moon_texture.loadPNG("../assets/texture/moon.png");
+  // Some parameters.
+  int speed = OpenGLContext::getRefreshRate() / 4;
   int current_tick = 0;
-  int earth_speed = 1 * speed, moon_speed = 28 * speed;
-  int cycle = std::lcm(earth_speed, moon_speed);
-  float earth_tick = 0, moon_tick = 0;
+  int earth_day_speed = 1 * speed;
+  int moon_speed = 28 * speed;
+  int earth_year_speed = 365 * speed;
+  int cycle = std::lcm(std::lcm(earth_day_speed, moon_speed), earth_year_speed);
+  float earth_year_tick = 0, earth_day_tick = 0, moon_tick = 0;
   // Camera
-  graphics::camera::QuaternionCamera camera(glm::vec3(0, 0, 10));
+  graphics::camera::QuaternionCamera camera(glm::vec3(0, 0, 4));
   camera.initialize(OpenGLContext::getAspectRatio());
   glfwSetWindowUserPointer(window, &camera);
   // Main rendering loop
@@ -71,7 +86,8 @@ int main() {
     camera.move(window);
     // Update simulation tick
     (++current_tick) %= cycle;
-    earth_tick = static_cast<float>(current_tick % earth_speed) / earth_speed;
+    earth_year_tick = static_cast<float>(current_tick % earth_year_speed) / earth_year_speed;
+    earth_day_tick = static_cast<float>(current_tick % earth_day_speed) / earth_day_speed;
     moon_tick = static_cast<float>(current_tick % moon_speed) / moon_speed;
     // GL_XXX_BIT can simply "OR" together to use.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -81,21 +97,31 @@ int main() {
     // ModelView Matrix
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(camera.getViewMatrix());
+    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
     // Render Earth
     glPushMatrix();
+    glRotatef(360 * earth_year_tick, 0, 1, 0);
+    glTranslatef(3, 0, 0);
+    glPushMatrix();
+    glRotatef(360.0f * -earth_year_tick, 0, 1, 0);
     glRotatef(-23.5, 0, 0, 1);
-    glRotatef(360.0f * earth_tick, 0, 1, 0);
+    glRotatef(360.0f * earth_day_tick, 0, 1, 0);
     earth_texture.bind();
     earth.draw();
     glPopMatrix();
     // Render Moon
     glPushMatrix();
     glRotatef(360.0f * moon_tick, 0, 1, 0);
-    glTranslatef(1.5, 0, 0);
+    glTranslatef(0.35, 0, 0);
     moon_texture.bind();
     moon.draw();
     glPopMatrix();
-
+    glPopMatrix();
+    // Render sun, need to disable lighting since light source is actully 'inside' the sun.
+    glDisable(GL_LIGHTING);
+    sun_texture.bind();
+    sun.draw();
+    glEnable(GL_LIGHTING);
     // Some platform need explicit glFlush
     glFlush();
     glfwSwapBuffers(window);
