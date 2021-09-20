@@ -90,7 +90,7 @@ if (MSVC)
   set(USE_MSVC_RUNTIME_LIBRARY_DLL ON)
 endif()
 # Homwwork
-# add_subdirectory(src)
+add_subdirectory(src)
 # Third party libs
 add_subdirectory(extern/glad)
 add_subdirectory(extern/glfw)
