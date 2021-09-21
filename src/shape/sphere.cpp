@@ -10,7 +10,8 @@ namespace graphics::shape {
 Sphere::Sphere(float _radius, int _stacks, int _slices) noexcept : radius(_radius), stacks(_stacks), slices(_slices) {}
 
 void Sphere::draw() const noexcept {
-  float slice_step = 2 * M_PI / slices, stack_step = M_PI / stacks;
+  float slice_step = static_cast<float>(2 * M_PI / slices);
+  float stack_step = static_cast<float>(M_PI / stacks);
   // TODO: You should implement the sphere function by yourself,
   //       that is, you cannot use gluSphere() or something like that.
   // Hint: glBegin, GL_TRIANGLE_STRIP, glEnd, glNormal3f, glTexCoord2f, glVertex3f, parametric equation

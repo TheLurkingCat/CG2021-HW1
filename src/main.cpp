@@ -9,9 +9,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#ifdef _MSC_VER
+#pragma warning(push, 0)
 #define WUFFS_IMPLEMENTATION
 #include <wuffs.h>
 #undef WUFFS_IMPLEMENTATION
+#pragma warning(pop)
+#endif
 
 #include "camera/quat_camera.h"
 #include "context_manager.h"
@@ -63,7 +68,7 @@ int main() {
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
   // Spheres
-  graphics::shape::Sphere sun(1, 180, 360), earth(0.2, 90, 180), moon(0.0546, 36, 72);
+  graphics::shape::Sphere sun(1.0f, 180, 360), earth(0.2f, 90, 180), moon(0.0546f, 36, 72);
   // Textures
   graphics::texture::Texture2D sun_texture, earth_texture, moon_texture;
   sun_texture.loadPNG("../assets/texture/sun.png");
@@ -126,7 +131,7 @@ int main() {
     // TODO: You need to setup moon's model matrix here
     glPopMatrix();
     glRotatef(360 * moon_tick, 0, 1, 0);
-    glTranslatef(0.35, 0, 0);
+    glTranslatef(0.35f, 0, 0);
     // End
     moon_texture.bind();
     moon.draw();

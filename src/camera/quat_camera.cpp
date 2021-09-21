@@ -4,7 +4,7 @@ namespace graphics::camera {
 void QuaternionCamera::move(GLFWwindow* window) {
   bool ismoved = false;
   // Calculate dt
-  static float lastFrameTime = glfwGetTime();
+  static float lastFrameTime = static_cast<float>(glfwGetTime());
   float currentFrameTime = static_cast<float>(glfwGetTime());
   float deltaTime = currentFrameTime - lastFrameTime;
   lastFrameTime = currentFrameTime;
