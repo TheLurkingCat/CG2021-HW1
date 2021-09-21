@@ -14,6 +14,7 @@ extern/glm/CMakeLists.txt \
 extern/glm/copying.txt \
 extern/wuffs \
 cmake \
+vs2019 \
 include \
 src \
 .clang-format \
