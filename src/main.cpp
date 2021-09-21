@@ -12,9 +12,13 @@
 
 #ifdef _MSC_VER
 #pragma warning(push, 0)
+#endif
+
 #define WUFFS_IMPLEMENTATION
 #include <wuffs.h>
 #undef WUFFS_IMPLEMENTATION
+
+#ifdef _MSC_VER
 #pragma warning(pop)
 #endif
 
