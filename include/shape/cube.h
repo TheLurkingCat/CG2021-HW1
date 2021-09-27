@@ -24,6 +24,7 @@ class Cube : Shape {
 
 private:
   glm::vec3 direction;
+  glm::vec3 rotation;
   void rotateX();
   void rotateY();
   void rotateZ();
