@@ -105,11 +105,11 @@ int main() {
   graphics::shape::Cube cubes[27];
   // Axis transform; used while doing layer-rotation
   glm::mat3 xAxisTransform = glm::mat3({1.0, 0, 0, 0, 1.0, 0, 0, 0, 1});
-  glm::mat3 yAxisTransform = glm::mat3({0, 0, 1.0, 0, 1.0, 0, -1.0, 0, 0});
-  glm::mat3 zAxisTransform = glm::mat3({0, -1.0, 0, 1.0, 0, 0, 0, 0, 1});
+  glm::mat3 yAxisTransform = glm::mat3({0, -1.0, 0, 1.0, 0, 0, 0, 0, 1});
+  glm::mat3 zAxisTransform = glm::mat3({0, 0, 1.0, 0, 1.0, 0, -1.0, 0, 0});
   // Layer
-  graphics::layer::Layer F(xAxisTransform), S(xAxisTransform), B(xAxisTransform), T(yAxisTransform), E(yAxisTransform),
-      D(yAxisTransform), L(zAxisTransform), M(zAxisTransform), R(zAxisTransform);
+  graphics::layer::Layer F(xAxisTransform), S(xAxisTransform), B(xAxisTransform), T(zAxisTransform), E(zAxisTransform),
+      D(zAxisTransform), L(yAxisTransform), M(yAxisTransform), R(yAxisTransform);
   F.setBlocks(std::begin({0, 1, 2, 3, 4, 5, 6, 7, 8}));
   S.setBlocks(std::begin({9, 10, 11, 12, 13, 14, 15, 16, 17}));
   B.setBlocks(std::begin({18, 19, 20, 21, 22, 23, 24, 25, 26}));
