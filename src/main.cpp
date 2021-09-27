@@ -1,6 +1,7 @@
 #include <cmath>
 #include <numeric>
 #include <string>
+#include <iostream>
 
 #include <GLFW/glfw3.h>
 #define GLAD_GL_IMPLEMENTATION
@@ -24,8 +25,13 @@
 
 #include "camera/quat_camera.h"
 #include "context_manager.h"
+#include "layer/layer.h"
+#include "shape/cube.h"
 #include "shape/sphere.h"
 #include "texture/texture2d.h"
+
+enum Axis { XAxis, YAxis, ZAxis };
+int renderAxis = XAxis;
 
 void keyCallback(GLFWwindow* window, int key, int, int action, int) {
   // There are three actions: press, release, hold
@@ -34,6 +40,18 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
     case GLFW_KEY_ESCAPE:
       // Esc
       glfwSetWindowShouldClose(window, GL_TRUE);
+      break;
+    case GLFW_KEY_X:
+      // x
+      renderAxis = XAxis;
+      break;
+    case GLFW_KEY_Y:
+      // y
+      renderAxis = YAxis;
+      break;
+    case GLFW_KEY_Z:
+      // z
+      renderAxis = ZAxis;
       break;
   }
 }
@@ -87,10 +105,30 @@ int main() {
   int earth_year_speed = 365 * speed;
   int cycle = std::lcm(std::lcm(earth_day_speed, moon_speed), earth_year_speed);
   float earth_year_tick = 0, earth_day_tick = 0, moon_tick = 0, sun_tick = 0;
+  float TranslateUnit = 2.0f;
+  float TranslateVector[] = {-TranslateUnit, 0, TranslateUnit};
   // Camera
-  graphics::camera::QuaternionCamera camera(glm::vec3(0, 0, 4));
+  graphics::camera::QuaternionCamera camera(glm::vec3(0, 4, 4));
   camera.initialize(OpenGLContext::getAspectRatio());
   glfwSetWindowUserPointer(window, &camera);
+
+  graphics::shape::Cube cubes[27];
+
+  glm::mat3 xAxisTransform = glm::mat3({1.0, 0, 0, 0, 1.0, 0, 0, 0, 1});
+  glm::mat3 yAxisTransform = glm::mat3({0, 0, 1.0, 0, 1.0, 0, -1.0, 0, 0});
+  glm::mat3 zAxisTransform = glm::mat3({0, -1.0, 0, 1.0, 0, 0, 0, 0, 1});
+  graphics::layer::Layer F(xAxisTransform), S(xAxisTransform), B(xAxisTransform), T(yAxisTransform), E(yAxisTransform),
+      D(yAxisTransform), L(zAxisTransform), M(zAxisTransform), R(zAxisTransform);
+  F.setBlocks(std::begin({0, 1, 2, 3, 4, 5, 6, 7, 8}));
+  S.setBlocks(std::begin({9, 10, 11, 12, 13, 14, 15, 16, 17}));
+  B.setBlocks(std::begin({18, 19, 20, 21, 22, 23, 24, 25, 26}));
+  L.setBlocks(std::begin({18, 9, 0, 21, 12, 3, 24, 15, 6}));
+  M.setBlocks(std::begin({19, 10, 1, 22, 13, 4, 25, 16, 7}));
+  R.setBlocks(std::begin({20, 11, 2, 23, 14, 5, 26, 17, 8}));
+  T.setBlocks(std::begin({18, 19, 20, 9, 10, 11, 0, 1, 2}));
+  E.setBlocks(std::begin({21, 22, 23, 12, 13, 14, 3, 4, 5}));
+  D.setBlocks(std::begin({24, 25, 26, 15, 16, 17, 6, 7, 8}));
+
   // Main rendering loop
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
@@ -115,30 +153,48 @@ int main() {
     glDisable(GL_LIGHTING);
     glPushMatrix();
     glRotatef(360 * sun_tick, 0, 1, 0);
-    sun_texture.bind();
-    sun.draw();
-    glPopMatrix();
+
+    if (renderAxis == 0) {
+      glPushMatrix();
+      glTranslatef(graphics::layer::Layer::TranslateUnit, 0, 0);
+      glRotatef(360 * sun_tick, 1, 0, 0);
+      F.draw(cubes);
+      glPopMatrix();
+
+      S.draw(cubes);
+
+      glPushMatrix();
+      glTranslatef(-graphics::layer::Layer::TranslateUnit, 0, 0);
+      B.draw(cubes);
+      glPopMatrix();
+    } else if (renderAxis == 1) {
+      glPushMatrix();
+      glTranslatef(0, graphics::layer::Layer::TranslateUnit, 0);
+      glRotatef(360 * sun_tick, 0, 1, 0);
+      L.draw(cubes);
+      glPopMatrix();
+
+      M.draw(cubes);
+
+      glPushMatrix();
+      glTranslatef(0, -graphics::layer::Layer::TranslateUnit, 0);
+      R.draw(cubes);
+      glPopMatrix();
+    } else if (renderAxis == 2) {
+      glPushMatrix();
+      glTranslatef(0, 0, graphics::layer::Layer::TranslateUnit);
+      glRotatef(360 * sun_tick, 0, 0, 1);
+      T.draw(cubes);
+      glPopMatrix();
+      E.draw(cubes);
+
+      glPushMatrix();
+      glTranslatef(0, 0, -graphics::layer::Layer::TranslateUnit);
+      D.draw(cubes);
+      glPopMatrix();
+    } 
+
     glEnable(GL_LIGHTING);
-    // Render Earth
-    // TODO: You need to setup earth's model matrix here
-    glPushMatrix();
-    glRotatef(360 * earth_year_tick, 0, 1, 0);
-    glTranslatef(3, 0, 0);
-    glPushMatrix();
-    glRotatef(360 * -earth_year_tick, 0, 1, 0);
-    glRotatef(-23.5, 0, 0, 1);
-    glRotatef(360 * earth_day_tick, 0, 1, 0);
-    // End
-    earth_texture.bind();
-    earth.draw();
-    // Render Moon
-    // TODO: You need to setup moon's model matrix here
-    glPopMatrix();
-    glRotatef(360 * moon_tick, 0, 1, 0);
-    glTranslatef(0.35f, 0, 0);
-    // End
-    moon_texture.bind();
-    moon.draw();
     // TODO: Maybe you need to put some glPopMatrix here depends on your implementation.
     glPopMatrix();
     // Some platform need explicit glFlush
