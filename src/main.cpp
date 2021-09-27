@@ -25,7 +25,6 @@
 
 #include "camera/quat_camera.h"
 #include "context_manager.h"
-#include "layer/layer.h"
 #include "shape/cube.h"
 #include "shape/sphere.h"
 #include "texture/texture2d.h"

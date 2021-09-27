@@ -24,9 +24,6 @@
     <Filter Include="來源檔案\shape">
       <UniqueIdentifier>{d8b2e208-feee-43b2-ba13-7f8834d7cdb6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="來源檔案\layer">
-      <UniqueIdentifier>{0eec7aa3-c070-4e5a-8783-e53786efc15d}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\texture\texture.cpp">
@@ -50,11 +47,8 @@
     <ClCompile Include="..\..\src\main.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\shape\corner_cube.cpp">
+    <ClCompile Include="..\..\src\shape\cube.cpp">
       <Filter>來源檔案\shape</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\layer\layer.cpp">
-      <Filter>來源檔案\layer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
