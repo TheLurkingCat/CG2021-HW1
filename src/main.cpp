@@ -89,34 +89,25 @@ int main() {
   glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-  // Spheres
-  graphics::shape::Sphere sun(1.0f, 180, 360), earth(0.2f, 90, 180), moon(0.0546f, 36, 72);
-  // Textures
-  graphics::texture::Texture2D sun_texture, earth_texture, moon_texture;
-  sun_texture.loadPNG("../assets/texture/sun.png");
-  earth_texture.loadPNG("../assets/texture/earth.png");
-  moon_texture.loadPNG("../assets/texture/moon.png");
   // Some parameters.
   int speed = OpenGLContext::getRefreshRate() / 4;
   int current_tick = 0;
-  int earth_day_speed = 1 * speed;
-  int moon_speed = 28 * speed;
-  int sun_speed = moon_speed;
-  int earth_year_speed = 365 * speed;
-  int cycle = std::lcm(std::lcm(earth_day_speed, moon_speed), earth_year_speed);
-  float earth_year_tick = 0, earth_day_tick = 0, moon_tick = 0, sun_tick = 0;
+  int body_speed = 28 * speed;
+  int cycle = 360;
+  float body_tick = 0;
   float TranslateUnit = 2.0f;
   float TranslateVector[] = {-TranslateUnit, 0, TranslateUnit};
   // Camera
   graphics::camera::QuaternionCamera camera(glm::vec3(0, 4, 4));
   camera.initialize(OpenGLContext::getAspectRatio());
   glfwSetWindowUserPointer(window, &camera);
-
+  // Cubes
   graphics::shape::Cube cubes[27];
-
+  // Axis transform; used while doing layer-rotation
   glm::mat3 xAxisTransform = glm::mat3({1.0, 0, 0, 0, 1.0, 0, 0, 0, 1});
   glm::mat3 yAxisTransform = glm::mat3({0, 0, 1.0, 0, 1.0, 0, -1.0, 0, 0});
   glm::mat3 zAxisTransform = glm::mat3({0, -1.0, 0, 1.0, 0, 0, 0, 0, 1});
+  // Layer
   graphics::layer::Layer F(xAxisTransform), S(xAxisTransform), B(xAxisTransform), T(yAxisTransform), E(yAxisTransform),
       D(yAxisTransform), L(zAxisTransform), M(zAxisTransform), R(zAxisTransform);
   F.setBlocks(std::begin({0, 1, 2, 3, 4, 5, 6, 7, 8}));
@@ -135,10 +126,7 @@ int main() {
     camera.move(window);
     // Update simulation tick
     (++current_tick) %= cycle;
-    sun_tick = static_cast<float>(current_tick % sun_speed) / sun_speed;
-    earth_year_tick = static_cast<float>(current_tick % earth_year_speed) / earth_year_speed;
-    earth_day_tick = static_cast<float>(current_tick % earth_day_speed) / earth_day_speed;
-    moon_tick = static_cast<float>(current_tick % moon_speed) / moon_speed;
+    body_tick = static_cast<float>(current_tick % body_speed) / body_speed;
     // GL_XXX_BIT can simply "OR" together to use.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Projection Matrix
@@ -152,12 +140,12 @@ int main() {
     // Render sun, need to disable lighting since light source is actully 'inside' the sun.
     glDisable(GL_LIGHTING);
     glPushMatrix();
-    glRotatef(360 * sun_tick, 0, 1, 0);
+    glRotatef(360 * body_tick, 0, 1, 0);
 
     if (renderAxis == 0) {
       glPushMatrix();
       glTranslatef(graphics::layer::Layer::TranslateUnit, 0, 0);
-      glRotatef(360 * sun_tick, 1, 0, 0);
+      glRotatef(360 * body_tick, 1, 0, 0);
       F.draw(cubes);
       glPopMatrix();
 
@@ -170,7 +158,7 @@ int main() {
     } else if (renderAxis == 1) {
       glPushMatrix();
       glTranslatef(0, graphics::layer::Layer::TranslateUnit, 0);
-      glRotatef(360 * sun_tick, 0, 1, 0);
+      glRotatef(360 * body_tick, 0, 1, 0);
       L.draw(cubes);
       glPopMatrix();
 
@@ -183,7 +171,7 @@ int main() {
     } else if (renderAxis == 2) {
       glPushMatrix();
       glTranslatef(0, 0, graphics::layer::Layer::TranslateUnit);
-      glRotatef(360 * sun_tick, 0, 0, 1);
+      glRotatef(360 * body_tick, 0, 0, 1);
       T.draw(cubes);
       glPopMatrix();
       E.draw(cubes);
