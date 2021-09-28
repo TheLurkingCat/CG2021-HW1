@@ -53,6 +53,6 @@ cd bin
 
 ### Visual Studio 2019
 
-- Open `CG2021.sln`
+- Open `vs2019/HW1.sln`
 - Select config then build (CTRL+SHIFT+B)
 - Use F5 to debug or CTRL+F5 to run.
