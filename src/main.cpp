@@ -89,7 +89,9 @@ int main() {
   glfwSetFramebufferSizeCallback(window, resizeCallback);
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   OpenGLContext::printSystemInfo();
+#ifndef NDEBUG
   OpenGLContext::enableDebugCallback();
+#endif
   // Legacy OpenGL need these
   glEnable(GL_COLOR_MATERIAL);
   glEnable(GL_LIGHTING);
