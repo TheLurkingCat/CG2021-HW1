@@ -45,7 +45,7 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
     case GLFW_KEY_F:
       // f
       std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getDirection().x == graphics::shape::Cube::Front) {
+        if (cube->getDirection().x < -0.5) {
           cube->rotate(graphics::shape::Cube::Axis::X);
         }
       });
@@ -53,7 +53,7 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
     case GLFW_KEY_T:
       // t
       std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getDirection().y == graphics::shape::Cube::Back) {
+        if (cube->getDirection().y > 0.5) {
           cube->rotate(graphics::shape::Cube::Axis::Y);
         }
       });
@@ -61,7 +61,7 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
     case GLFW_KEY_L:
       // l
       std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getDirection().z == graphics::shape::Cube::Front) {
+        if (cube->getDirection().z < -0.5) {
           cube->rotate(graphics::shape::Cube::Axis::Z);
         }
       });
