@@ -15,9 +15,6 @@
     <Filter Include="標頭檔\glfw">
       <UniqueIdentifier>{0ceb5d69-2349-4b06-b784-4dd9e687a913}</UniqueIdentifier>
     </Filter>
-    <Filter Include="來源檔案\texture">
-      <UniqueIdentifier>{51f900cf-ddb0-49df-ac6a-c0f8c7a6fdfb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="來源檔案\camera">
       <UniqueIdentifier>{a7395f8f-7635-4906-a97e-0461ec899356}</UniqueIdentifier>
     </Filter>
@@ -26,20 +23,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\texture\texture.cpp">
-      <Filter>來源檔案\texture</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\texture\texture2d.cpp">
-      <Filter>來源檔案\texture</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\camera\camera.cpp">
       <Filter>來源檔案\camera</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\camera\quat_camera.cpp">
       <Filter>來源檔案\camera</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\shape\sphere.cpp">
-      <Filter>來源檔案\shape</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\context_manager.cpp">
       <Filter>來源檔案</Filter>
