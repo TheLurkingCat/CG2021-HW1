@@ -35,34 +35,37 @@ std::vector<std::unique_ptr<graphics::shape::Cube>> cubes;
 
 void keyCallback(GLFWwindow* window, int key, int, int action, int) {
   using CubePTR = std::unique_ptr<graphics::shape::Cube>;
+  using Axis = graphics::shape::Cube::Axis;
   // There are three actions: press, release, hold
   if (action != GLFW_PRESS) return;
+  if (key == GLFW_KEY_ESCAPE) {
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
+    return;
+  }
+  bool idle = std::all_of(cubes.begin(), cubes.end(), [](CubePTR& cube) { return cube->isIdle(); });
+  if (!idle) return;
   switch (key) {
-    case GLFW_KEY_ESCAPE:
-      // Esc
-      glfwSetWindowShouldClose(window, GL_TRUE);
-      break;
     case GLFW_KEY_F:
       // f
       std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getDirection().x < -0.5) {
-          cube->rotate(graphics::shape::Cube::Axis::X);
+        if (cube->getPosition().x < -0.5) {
+          cube->rotate(Axis::X);
         }
       });
       break;
     case GLFW_KEY_T:
       // t
       std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getDirection().y > 0.5) {
-          cube->rotate(graphics::shape::Cube::Axis::Y);
+        if (cube->getPosition().y > 0.5) {
+          cube->rotate(Axis::Y);
         }
       });
       break;
     case GLFW_KEY_L:
       // l
       std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getDirection().z < -0.5) {
-          cube->rotate(graphics::shape::Cube::Axis::Z);
+        if (cube->getPosition().z < -0.5) {
+          cube->rotate(Axis::Z);
         }
       });
       break;
@@ -140,7 +143,7 @@ int main() {
     glRotatef(360 * body_tick, 0, 1, 0);
     for (const auto& cube : cubes) {
       glPushMatrix();
-      cube->setupModelView();
+      cube->setupModel();
       cube->draw();
       glPopMatrix();
     }

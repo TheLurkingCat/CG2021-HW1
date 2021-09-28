@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 
 #include "shape/shape.h"
 
@@ -7,25 +8,31 @@
 
 namespace graphics::shape {
 class Cube : public Shape {
-  static constexpr float scale = 2.1f;
-  static glm::quat rx;
-  static glm::quat ry;
-  static glm::quat rz;
+  static constexpr float scale = 2.05f;
+  static int rotation_speed;
+  static glm::quat base_rotation[3];
+
   // Axis transform; used while doing layer-rotation
 
  public:
-  enum Layer { Front = -1, Middle = 0, Back = 1 };
   enum class Axis { X = 0, Y = 1, Z = 2 };
 
-  explicit Cube(glm::vec3 direction) noexcept;
-  glm::vec3 getDirection() { return rotation * direction; }
-  void setupModelView() const noexcept override;
+  explicit Cube(glm::vec3 position) noexcept;
+  glm::vec3 getPosition() const noexcept { return rotation * position; }
+  float getPosition(Axis axis) const noexcept { return (rotation * position)[static_cast<int>(axis)]; }
+  bool isIdle() const noexcept { return !rotation_direction.has_value(); }
+
+  void setupModel() noexcept override;
   void draw() const noexcept override;
+  void animateRotation() const;
   void rotate(Axis axis);
   CONSTEXPR_VIRTUAL const char* getTypeName() const noexcept override { return "Cube"; }
 
  private:
-  glm::vec3 direction;
+  std::optional<int> rotation_direction;
+  int rotation_progress;
+  glm::vec3 position;
+  glm::mat4 translation;
   glm::quat rotation;
 };
 }  // namespace graphics::shape

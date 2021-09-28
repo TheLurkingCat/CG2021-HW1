@@ -1,21 +1,33 @@
 #include "shape/cube.h"
 
 #include <glad/gl.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "context_manager.h"
 #include "utils.h"
 
 namespace graphics::shape {
-glm::quat Cube::rx = glm::angleAxis(utils::PI_2<float>(), glm::vec3(1, 0, 0));
-glm::quat Cube::ry = glm::angleAxis(utils::PI_2<float>(), glm::vec3(0, 1, 0));
-glm::quat Cube::rz = glm::angleAxis(utils::PI_2<float>(), glm::vec3(0, 0, 1));
+int Cube::rotation_speed = OpenGLContext::getRefreshRate() * 2;
+glm::quat Cube::base_rotation[3] = {glm::angleAxis(utils::PI_2<float>() / rotation_speed, glm::vec3(1, 0, 0)),
+                                    glm::angleAxis(utils::PI_2<float>() / rotation_speed, glm::vec3(0, 1, 0)),
+                                    glm::angleAxis(utils::PI_2<float>() / rotation_speed, glm::vec3(0, 0, 1))};
 
-Cube::Cube(glm::vec3 _direction) noexcept : direction(_direction), rotation(1, 0, 0, 0) {}
+Cube::Cube(glm::vec3 _position) noexcept
+    : position(_position), rotation(1, 0, 0, 0), rotation_progress(rotation_speed) {
+  translation = glm::translate(glm::mat4(1.0f), position * scale);
+}
 
-void Cube::setupModelView() const noexcept {
-  glm::vec3 translate = direction * scale;
-  glm::mat4 model = glm::mat4_cast(rotation) * glm::translate(glm::mat4(1), translate);
+void Cube::setupModel() noexcept {
+  if (rotation_direction) {
+    if (rotation_progress == 0) {
+      rotation_direction = std::nullopt;
+      rotation_progress = rotation_speed;
+    } else {
+      --rotation_progress;
+      rotation = base_rotation[*rotation_direction] * rotation;
+    }
+  }
+  glm::mat4 model = glm::mat4_cast(rotation) * translation;
   glMultMatrixf(glm::value_ptr(model));
 }
 
@@ -87,17 +99,5 @@ void Cube::draw() const noexcept {
   glEnd();
 }
 
-void Cube::rotate(Axis axis) {
-  switch (axis) {
-    case Axis::X:
-      rotation = rx * rotation;
-      break;
-    case Axis::Y:
-      rotation = ry * rotation;
-      break;
-    case Axis::Z:
-      rotation = rz * rotation;
-      break;
-  }
-}
+void Cube::rotate(Axis axis) { rotation_direction = static_cast<int>(axis); }
 }  // namespace graphics::shape
