@@ -1,6 +1,7 @@
 #include <cmath>
 #include <numeric>
 #include <string>
+#include <iostream>
 
 #include <GLFW/glfw3.h>
 #define GLAD_GL_IMPLEMENTATION
@@ -24,8 +25,12 @@
 
 #include "camera/quat_camera.h"
 #include "context_manager.h"
+#include "shape/cube.h"
 #include "shape/sphere.h"
 #include "texture/texture2d.h"
+
+// Cubes
+std::vector<graphics::shape::Cube*> cubes;
 
 void keyCallback(GLFWwindow* window, int key, int, int action, int) {
   // There are three actions: press, release, hold
@@ -34,6 +39,30 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
     case GLFW_KEY_ESCAPE:
       // Esc
       glfwSetWindowShouldClose(window, GL_TRUE);
+      break;
+    case GLFW_KEY_F:
+      // f
+      std::for_each(cubes.begin(), cubes.end(), [](graphics::shape::Cube* cube) {
+        if (cube->getDirection().x == graphics::shape::Cube::Front) {
+          cube->rotate(graphics::shape::Cube::Axis::X);
+        }
+      });
+      break;
+    case GLFW_KEY_T:
+      // t
+      std::for_each(cubes.begin(), cubes.end(), [](graphics::shape::Cube* cube) {
+        if (cube->getDirection().y == graphics::shape::Cube::Back) {
+          cube->rotate(graphics::shape::Cube::Axis::Y);
+        }
+      });
+      break;
+    case GLFW_KEY_L:
+      // l
+      std::for_each(cubes.begin(), cubes.end(), [](graphics::shape::Cube* cube) {
+        if (cube->getDirection().z == graphics::shape::Cube::Front) {
+          cube->rotate(graphics::shape::Cube::Axis::Z);
+        }
+      });
       break;
   }
 }
@@ -71,36 +100,34 @@ int main() {
   glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-  // Spheres
-  graphics::shape::Sphere sun(1.0f, 180, 360), earth(0.2f, 90, 180), moon(0.0546f, 36, 72);
-  // Textures
-  graphics::texture::Texture2D sun_texture, earth_texture, moon_texture;
-  sun_texture.loadPNG("../assets/texture/sun.png");
-  earth_texture.loadPNG("../assets/texture/earth.png");
-  moon_texture.loadPNG("../assets/texture/moon.png");
   // Some parameters.
   int speed = OpenGLContext::getRefreshRate() / 4;
   int current_tick = 0;
-  int earth_day_speed = 1 * speed;
-  int moon_speed = 28 * speed;
-  int sun_speed = moon_speed;
-  int earth_year_speed = 365 * speed;
-  int cycle = std::lcm(std::lcm(earth_day_speed, moon_speed), earth_year_speed);
-  float earth_year_tick = 0, earth_day_tick = 0, moon_tick = 0, sun_tick = 0;
+  int body_speed = 28 * speed;
+  int cycle = 360;
+  int side = 3;
+  float body_tick = 0;
   // Camera
-  graphics::camera::QuaternionCamera camera(glm::vec3(0, 0, 4));
+  graphics::camera::QuaternionCamera camera(glm::vec3(0, 4, 4));
   camera.initialize(OpenGLContext::getAspectRatio());
-  glfwSetWindowUserPointer(window, &camera);
+  glfwSetWindowUserPointer(window, &camera); 
+  
+  for (int i = 0; i < pow(side, 3); i++) {
+    // Notice that the following corresponding to the enum { Front, Middle, Back } at cube.h
+    // Minus 1 at the end to let the rotation easier
+    int xAxis = i / pow(side, 2);
+    int yAxis = (i - xAxis * pow(side, 2)) / side;
+    int zAxis = i % side;
+    cubes.push_back(new graphics::shape::Cube(glm::vec3(xAxis - 1, yAxis - 1, zAxis - 1)));
+  }
+
   // Main rendering loop
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
     camera.move(window);
     // Update simulation tick
     (++current_tick) %= cycle;
-    sun_tick = static_cast<float>(current_tick % sun_speed) / sun_speed;
-    earth_year_tick = static_cast<float>(current_tick % earth_year_speed) / earth_year_speed;
-    earth_day_tick = static_cast<float>(current_tick % earth_day_speed) / earth_day_speed;
-    moon_tick = static_cast<float>(current_tick % moon_speed) / moon_speed;
+    body_tick = static_cast<float>(current_tick % body_speed) / body_speed;
     // GL_XXX_BIT can simply "OR" together to use.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Projection Matrix
@@ -114,31 +141,13 @@ int main() {
     // Render sun, need to disable lighting since light source is actully 'inside' the sun.
     glDisable(GL_LIGHTING);
     glPushMatrix();
-    glRotatef(360 * sun_tick, 0, 1, 0);
-    sun_texture.bind();
-    sun.draw();
-    glPopMatrix();
+    glRotatef(360 * body_tick, 0, 1, 0);
+
+    for (auto cube : cubes) {
+      cube->draw();
+    }
+
     glEnable(GL_LIGHTING);
-    // Render Earth
-    // TODO: You need to setup earth's model matrix here
-    glPushMatrix();
-    glRotatef(360 * earth_year_tick, 0, 1, 0);
-    glTranslatef(3, 0, 0);
-    glPushMatrix();
-    glRotatef(360 * -earth_year_tick, 0, 1, 0);
-    glRotatef(-23.5, 0, 0, 1);
-    glRotatef(360 * earth_day_tick, 0, 1, 0);
-    // End
-    earth_texture.bind();
-    earth.draw();
-    // Render Moon
-    // TODO: You need to setup moon's model matrix here
-    glPopMatrix();
-    glRotatef(360 * moon_tick, 0, 1, 0);
-    glTranslatef(0.35f, 0, 0);
-    // End
-    moon_texture.bind();
-    moon.draw();
     // TODO: Maybe you need to put some glPopMatrix here depends on your implementation.
     glPopMatrix();
     // Some platform need explicit glFlush

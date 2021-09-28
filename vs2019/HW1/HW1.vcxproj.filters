@@ -47,6 +47,9 @@
     <ClCompile Include="..\..\src\main.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\shape\cube.cpp">
+      <Filter>來源檔案\shape</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\extern\glad\include\glad\gl.h">

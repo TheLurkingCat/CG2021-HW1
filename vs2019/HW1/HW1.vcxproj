@@ -196,6 +196,7 @@
     <ClCompile Include="..\..\src\camera\quat_camera.cpp" />
     <ClCompile Include="..\..\src\context_manager.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
+    <ClCompile Include="..\..\src\shape\cube.cpp" />
     <ClCompile Include="..\..\src\shape\sphere.cpp" />
     <ClCompile Include="..\..\src\texture\texture.cpp" />
     <ClCompile Include="..\..\src\texture\texture2d.cpp" />
