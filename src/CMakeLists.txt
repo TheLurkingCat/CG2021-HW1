@@ -3,10 +3,7 @@ project(HW1 C CXX)
 set(HW1_SOURCE
   ${HW1_SOURCE_DIR}/camera/camera.cpp
   ${HW1_SOURCE_DIR}/camera/quat_camera.cpp
-  ${HW1_SOURCE_DIR}/shape/sphere.cpp
   ${HW1_SOURCE_DIR}/shape/cube.cpp
-  ${HW1_SOURCE_DIR}/texture/texture.cpp
-  ${HW1_SOURCE_DIR}/texture/texture2d.cpp
   ${HW1_SOURCE_DIR}/context_manager.cpp
   ${HW1_SOURCE_DIR}/main.cpp
 )
@@ -16,9 +13,6 @@ set(HW1_HEADER
   ${HW1_SOURCE_DIR}/../include/camera/quat_camera.h
   ${HW1_SOURCE_DIR}/../include/shape/shape.h
   ${HW1_SOURCE_DIR}/../include/shape/cube.h
-  ${HW1_SOURCE_DIR}/../include/shape/sphere.h
-  ${HW1_SOURCE_DIR}/../include/texture/texture.h
-  ${HW1_SOURCE_DIR}/../include/texture/texture2d.h
   ${HW1_SOURCE_DIR}/../include/context_manager.h
   ${HW1_SOURCE_DIR}/../include/utils.h
 

@@ -1,7 +1,10 @@
+#include <algorithm>
 #include <cmath>
+#include <iostream>
+#include <memory>
 #include <numeric>
 #include <string>
-#include <iostream>
+#include <vector>
 
 #include <GLFW/glfw3.h>
 #define GLAD_GL_IMPLEMENTATION
@@ -26,13 +29,12 @@
 #include "camera/quat_camera.h"
 #include "context_manager.h"
 #include "shape/cube.h"
-#include "shape/sphere.h"
-#include "texture/texture2d.h"
 
 // Cubes
-std::vector<graphics::shape::Cube*> cubes;
+std::vector<std::unique_ptr<graphics::shape::Cube>> cubes;
 
 void keyCallback(GLFWwindow* window, int key, int, int action, int) {
+  using CubePTR = std::unique_ptr<graphics::shape::Cube>;
   // There are three actions: press, release, hold
   if (action != GLFW_PRESS) return;
   switch (key) {
@@ -42,7 +44,7 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
       break;
     case GLFW_KEY_F:
       // f
-      std::for_each(cubes.begin(), cubes.end(), [](graphics::shape::Cube* cube) {
+      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
         if (cube->getDirection().x == graphics::shape::Cube::Front) {
           cube->rotate(graphics::shape::Cube::Axis::X);
         }
@@ -50,7 +52,7 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
       break;
     case GLFW_KEY_T:
       // t
-      std::for_each(cubes.begin(), cubes.end(), [](graphics::shape::Cube* cube) {
+      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
         if (cube->getDirection().y == graphics::shape::Cube::Back) {
           cube->rotate(graphics::shape::Cube::Axis::Y);
         }
@@ -58,7 +60,7 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
       break;
     case GLFW_KEY_L:
       // l
-      std::for_each(cubes.begin(), cubes.end(), [](graphics::shape::Cube* cube) {
+      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
         if (cube->getDirection().z == graphics::shape::Cube::Front) {
           cube->rotate(graphics::shape::Cube::Axis::Z);
         }
@@ -77,7 +79,7 @@ void resizeCallback(GLFWwindow* window, int width, int height) {
 
 int main() {
   // Initialize OpenGL context, details are wrapped in class.
-  OpenGLContext::createContext(21, GLFW_OPENGL_ANY_PROFILE);
+  OpenGLContext::createContext(41, GLFW_OPENGL_COMPAT_PROFILE);
   GLFWwindow* window = OpenGLContext::getWindow();
   glfwSetWindowTitle(window, "HW1");
   glfwSetKeyCallback(window, keyCallback);
@@ -86,39 +88,34 @@ int main() {
   OpenGLContext::printSystemInfo();
   OpenGLContext::enableDebugCallback();
   // Legacy OpenGL need these
-  glEnable(GL_TEXTURE_2D);
-  glEnable(GL_NORMALIZE);
   glEnable(GL_COLOR_MATERIAL);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   // TODO: Setup lights
   // Hint: glColorMaterial, glLightfv
-  glColorMaterial(GL_FRONT, GL_DIFFUSE);
-  float light_pos[] = {0.0f, 0.0f, 0.0f, 1.0f};
-  float light_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};
-  float light_diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
+  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+  float light_pos[] = {0.0f, 1.0f, 1.0f, 0.0f};
+  float light_ambient[] = {0.1f, 0.1f, 0.1f, 1.0f};
+  float light_diffuse[] = {0.75f, 0.75f, 0.75f, 1.0f};
   glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
   // Some parameters.
-  int speed = OpenGLContext::getRefreshRate() / 4;
+  int speed = OpenGLContext::getRefreshRate() * 10;
   int current_tick = 0;
-  int body_speed = 28 * speed;
-  int cycle = 360;
-  int side = 3;
   float body_tick = 0;
   // Camera
   graphics::camera::QuaternionCamera camera(glm::vec3(0, 4, 4));
   camera.initialize(OpenGLContext::getAspectRatio());
-  glfwSetWindowUserPointer(window, &camera); 
-  
-  for (int i = 0; i < pow(side, 3); i++) {
-    // Notice that the following corresponding to the enum { Front, Middle, Back } at cube.h
-    // Minus 1 at the end to let the rotation easier
-    int xAxis = i / pow(side, 2);
-    int yAxis = (i - xAxis * pow(side, 2)) / side;
-    int zAxis = i % side;
-    cubes.push_back(new graphics::shape::Cube(glm::vec3(xAxis - 1, yAxis - 1, zAxis - 1)));
+  glfwSetWindowUserPointer(window, &camera);
+
+  // Generate all mini-cubes
+  for (int i = -1; i <= 1; ++i) {
+    for (int j = -1; j <= 1; ++j) {
+      for (int k = -1; k <= 1; ++k) {
+        cubes.emplace_back(std::make_unique<graphics::shape::Cube>(glm::vec3(i, j, k)));
+      }
+    }
   }
 
   // Main rendering loop
@@ -126,8 +123,8 @@ int main() {
     glfwPollEvents();
     camera.move(window);
     // Update simulation tick
-    (++current_tick) %= cycle;
-    body_tick = static_cast<float>(current_tick % body_speed) / body_speed;
+    (++current_tick) %= speed;
+    body_tick = static_cast<float>(current_tick) / speed;
     // GL_XXX_BIT can simply "OR" together to use.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Projection Matrix
@@ -138,22 +135,21 @@ int main() {
     glLoadMatrixf(camera.getViewMatrix());
     // Light position needs to multiply with view matrix, but not model matrix
     glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-    // Render sun, need to disable lighting since light source is actully 'inside' the sun.
-    glDisable(GL_LIGHTING);
+
     glPushMatrix();
     glRotatef(360 * body_tick, 0, 1, 0);
-
-    for (auto cube : cubes) {
+    for (const auto& cube : cubes) {
+      glPushMatrix();
+      cube->setupModelView();
       cube->draw();
+      glPopMatrix();
     }
-
-    glEnable(GL_LIGHTING);
-    // TODO: Maybe you need to put some glPopMatrix here depends on your implementation.
     glPopMatrix();
+#ifdef __APPLE__
     // Some platform need explicit glFlush
     glFlush();
+#endif
     glfwSwapBuffers(window);
   }
-
   return 0;
 }
