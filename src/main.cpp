@@ -14,18 +14,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#ifdef _MSC_VER
-#pragma warning(push, 0)
-#endif
-
-#define WUFFS_IMPLEMENTATION
-#include <wuffs.h>
-#undef WUFFS_IMPLEMENTATION
-
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
-
 #include "camera/quat_camera.h"
 #include "context_manager.h"
 #include "shape/cube.h"

@@ -20,7 +20,7 @@ set(HW1_HEADER
 add_executable(HW1 ${HW1_SOURCE} ${HW1_HEADER})
 target_include_directories(HW1 PRIVATE ${HW1_SOURCE_DIR}/../include)
 
-add_dependencies(HW1 glad glfw glm wuffs)
+add_dependencies(HW1 glad glfw glm)
 # Can include glfw and glad in arbitrary order
 target_compile_definitions(HW1 PRIVATE GLFW_INCLUDE_NONE)
 # More warnings
@@ -40,7 +40,6 @@ set_target_properties(HW1 PROPERTIES
 target_link_libraries(HW1
   PRIVATE glad
   PRIVATE glfw
-  PRIVATE wuffs
 )
 
 if (TARGET glm::glm_shared)

@@ -11,7 +11,6 @@ extern/glm/cmake `
 extern/glm/glm `
 extern/glm/CMakeLists.txt `
 extern/glm/copying.txt `
-extern/wuffs `
 cmake `
 vs2019/HW1.sln `
 vs2019/HW1 `
