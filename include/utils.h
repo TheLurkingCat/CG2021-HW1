@@ -65,6 +65,17 @@
 
 // Some useful functions
 namespace utils {
+
+template <typename T>
+constexpr inline T PI() {
+  return static_cast<T>(M_PI);
+}
+
+template <typename T>
+constexpr inline T PI_2() {
+  return static_cast<T>(M_PI_2);
+}
+
 #if HAS_CXX20_SUPPORT
 constexpr inline uint32_t log2(uint32_t n) { return std::bit_width(n) - 1; }
 #else
