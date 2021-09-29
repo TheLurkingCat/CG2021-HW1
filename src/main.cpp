@@ -41,6 +41,22 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
         }
       });
       break;
+    case GLFW_KEY_C:
+      // c
+      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
+        if (cube->getPosition().x == 0) {
+          cube->rotate(Axis::X);
+        }
+      });
+      break;
+    case GLFW_KEY_B:
+      // b
+      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
+        if (cube->getPosition().x > 0.5) {
+          cube->rotate(Axis::X);
+        }
+      });
+      break;
     case GLFW_KEY_T:
       // t
       std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
@@ -49,10 +65,42 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
         }
       });
       break;
+    case GLFW_KEY_E:
+      // e
+      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
+        if (cube->getPosition().y == 0.0) {
+          cube->rotate(Axis::Y);
+        }
+      });
+      break;
+    case GLFW_KEY_G:
+      // g
+      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
+        if (cube->getPosition().y < -0.5) {
+          cube->rotate(Axis::Y);
+        }
+      });
+      break;
     case GLFW_KEY_L:
       // l
       std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
         if (cube->getPosition().z < -0.5) {
+          cube->rotate(Axis::Z);
+        }
+      });
+      break;
+    case GLFW_KEY_M:
+      // m
+      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
+        if (cube->getPosition().z == 0.0) {
+          cube->rotate(Axis::Z);
+        }
+      });
+      break;
+    case GLFW_KEY_R:
+      // r
+      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
+        if (cube->getPosition().z > 0.5) {
           cube->rotate(Axis::Z);
         }
       });
