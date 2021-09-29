@@ -18,6 +18,7 @@
 #include "context_manager.h"
 #include "shape/cube.h"
 
+bool is_auto_rotate = false;
 // Cubes
 std::vector<std::unique_ptr<graphics::shape::Cube>> cubes;
 
@@ -106,6 +107,10 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
         }
       });
       break;
+    case GLFW_KEY_Q:
+      // q
+      is_auto_rotate = !is_auto_rotate;
+      break;
   }
 }
 
@@ -145,7 +150,7 @@ int main() {
   // Some parameters.
   int speed = OpenGLContext::getRefreshRate() * 10;
   int current_tick = 0;
-  float body_tick = 0;
+  float body_tick = 0.25;
   // Camera
   graphics::camera::QuaternionCamera camera(glm::vec3(0, 4, 4));
   camera.initialize(OpenGLContext::getAspectRatio());
@@ -164,9 +169,13 @@ int main() {
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
     camera.move(window);
-    // Update simulation tick
-    (++current_tick) %= speed;
-    body_tick = static_cast<float>(current_tick) / speed;
+
+    if (is_auto_rotate) {
+      // Update simulation tick
+      (++current_tick) %= speed;
+      body_tick = static_cast<float>(current_tick) / speed;
+    }
+
     // GL_XXX_BIT can simply "OR" together to use.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Projection Matrix
