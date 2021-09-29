@@ -32,6 +32,7 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
   }
   bool idle = std::all_of(cubes.begin(), cubes.end(), [](CubePTR& cube) { return cube->isIdle(); });
   if (!idle) return;
+  // TODO: Detect key-events
   switch (key) {
     case GLFW_KEY_F:
       // f
@@ -179,6 +180,8 @@ int main() {
 
     glPushMatrix();
     glRotatef(360 * body_tick, 0, 1, 0);
+    // TODO: Render Rubik's cube
+    // Hint: glPushMatrix, glPopMatrix
     for (const auto& cube : cubes) {
       glPushMatrix();
       cube->setupModel();
