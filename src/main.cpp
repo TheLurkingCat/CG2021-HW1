@@ -19,6 +19,7 @@
 #include "shape/cube.h"
 
 bool is_auto_rotate = false;
+std::optional<int> rotation_direction = std::nullopt;
 // Cubes
 std::vector<std::unique_ptr<graphics::shape::Cube>> cubes;
 
@@ -59,8 +60,8 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
         }
       });
       break;
-    case GLFW_KEY_T:
-      // t
+    case GLFW_KEY_U:
+      // u
       std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
         if (cube->getPosition().y > 0.5) {
           cube->rotate(Axis::Y);
@@ -110,6 +111,24 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
     case GLFW_KEY_Q:
       // q
       is_auto_rotate = !is_auto_rotate;
+      break;
+    case GLFW_KEY_X:
+      // x
+      if (!is_auto_rotate) {
+        std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) { cube->rotate(Axis::Z); });
+      }
+      break;
+    case GLFW_KEY_Y:
+      // y
+      if (!is_auto_rotate) {
+        std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) { cube->rotate(Axis::Y); });
+      }
+      break;
+    case GLFW_KEY_Z:
+      // z
+      if (!is_auto_rotate) {
+        std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) { cube->rotate(Axis::X); });
+      }
       break;
   }
 }
