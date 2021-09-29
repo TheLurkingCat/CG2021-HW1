@@ -64,10 +64,10 @@ void Cube::draw() const noexcept {
   glColor3f(1.0f, 0.0f, 0.0f);
   glNormal3f(0.0f, 0.0f, 1.0f);
 
-  glVertex3f(-1.0f, 1.0f, 1.0f);
-  glVertex3f(-1.0f, -1.0f, 1.0f);
   glVertex3f(1.0f, 1.0f, 1.0f);
   glVertex3f(1.0f, -1.0f, 1.0f);
+  glVertex3f(1.0f, 1.0f, -1.0f);
+  glVertex3f(1.0f, -1.0f, -1.0f);
   glEnd();
 
   // Yellow, left
@@ -75,10 +75,10 @@ void Cube::draw() const noexcept {
   glColor3f(1.0f, 1.0f, 0.0f);
   glNormal3f(0.0f, -0.0f, -1.0f);
 
-  glVertex3f(-1.0f, -1.0f, -1.0f);
   glVertex3f(-1.0f, 1.0f, -1.0f);
-  glVertex3f(1.0f, -1.0f, -1.0f);
-  glVertex3f(1.0f, 1.0f, -1.0f);
+  glVertex3f(-1.0f, -1.0f, -1.0f);
+  glVertex3f(-1.0f, 1.0f, 1.0f);
+  glVertex3f(-1.0f, -1.0f, 1.0f);
   glEnd();
 
   // Blue, front
@@ -86,10 +86,10 @@ void Cube::draw() const noexcept {
   glColor3f(0.0f, 0.0f, 1.0f);
   glNormal3f(-1.0f, 0.0f, 0.0f);
 
-  glVertex3f(-1.0f, 1.0f, -1.0f);
-  glVertex3f(-1.0f, -1.0f, -1.0f);
   glVertex3f(-1.0f, 1.0f, 1.0f);
   glVertex3f(-1.0f, -1.0f, 1.0f);
+  glVertex3f(1.0f, 1.0f, 1.0f);
+  glVertex3f(1.0f, -1.0f, 1.0f);
   glEnd();
 
   // Magenta, back
@@ -97,10 +97,10 @@ void Cube::draw() const noexcept {
   glColor3f(1.0f, 0.0f, 1.0f);
   glNormal3f(1.0f, 0.0f, 0.0f);
 
-  glVertex3f(1.0f, 1.0f, 1.0f);
-  glVertex3f(1.0f, -1.0f, 1.0f);
-  glVertex3f(1.0f, 1.0f, -1.0f);
+  glVertex3f(-1.0f, -1.0f, -1.0f);
+  glVertex3f(-1.0f, 1.0f, -1.0f);
   glVertex3f(1.0f, -1.0f, -1.0f);
+  glVertex3f(1.0f, 1.0f, -1.0f);
   glEnd();
 }
 
