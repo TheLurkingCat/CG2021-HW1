@@ -18,8 +18,8 @@ class Cube : public Shape {
   enum class Axis { X = 0, Y = 1, Z = 2 };
 
   explicit Cube(glm::vec3 position) noexcept;
-  glm::vec3 getPosition() const noexcept { return rotation * position; }
-  float getPosition(Axis axis) const noexcept { return (rotation * position)[static_cast<int>(axis)]; }
+  glm::vec3 getPosition() const noexcept { return glm::round(rotation * position); }
+  float getPosition(Axis axis) const noexcept { return (glm::round(rotation * position))[static_cast<int>(axis)]; }
   bool isIdle() const noexcept { return !rotation_direction.has_value(); }
 
   void setupModel() noexcept override;

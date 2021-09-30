@@ -24,9 +24,12 @@ void Cube::setupModel() noexcept {
       rotation_progress = rotation_speed;
     } else {
       --rotation_progress;
+      // TODO: Update rotation
       rotation = base_rotation[*rotation_direction] * rotation;
     }
   }
+  // TODO: Update model matrix
+  // Hint: mat4_cast, glMultMatrixf, value_ptr
   glm::mat4 model = glm::mat4_cast(rotation) * translation;
   glMultMatrixf(glm::value_ptr(model));
 }
@@ -55,30 +58,21 @@ void Cube::draw() const noexcept {
   glEnd();
 
   // Red, right
+  // TODO: Render right face
+  // Hint: glBegin, glColor3f, glNormal3f, glVertex3f, glEnd
   glBegin(GL_TRIANGLE_STRIP);
   glColor3f(1.0f, 0.0f, 0.0f);
-  glNormal3f(0.0f, 0.0f, 1.0f);
+  glNormal3f(1.0f, 0.0f, 0.0f);
 
-  glVertex3f(-1.0f, 1.0f, 1.0f);
-  glVertex3f(-1.0f, -1.0f, 1.0f);
   glVertex3f(1.0f, 1.0f, 1.0f);
   glVertex3f(1.0f, -1.0f, 1.0f);
+  glVertex3f(1.0f, 1.0f, -1.0f);
+  glVertex3f(1.0f, -1.0f, -1.0f);
   glEnd();
 
   // Yellow, left
   glBegin(GL_TRIANGLE_STRIP);
   glColor3f(1.0f, 1.0f, 0.0f);
-  glNormal3f(0.0f, -0.0f, -1.0f);
-
-  glVertex3f(-1.0f, -1.0f, -1.0f);
-  glVertex3f(-1.0f, 1.0f, -1.0f);
-  glVertex3f(1.0f, -1.0f, -1.0f);
-  glVertex3f(1.0f, 1.0f, -1.0f);
-  glEnd();
-
-  // Blue, front
-  glBegin(GL_TRIANGLE_STRIP);
-  glColor3f(0.0f, 0.0f, 1.0f);
   glNormal3f(-1.0f, 0.0f, 0.0f);
 
   glVertex3f(-1.0f, 1.0f, -1.0f);
@@ -87,15 +81,26 @@ void Cube::draw() const noexcept {
   glVertex3f(-1.0f, -1.0f, 1.0f);
   glEnd();
 
+  // Blue, front
+  glBegin(GL_TRIANGLE_STRIP);
+  glColor3f(0.0f, 0.0f, 1.0f);
+  glNormal3f(0.0f, 0.0f, 1.0f);
+
+  glVertex3f(-1.0f, 1.0f, 1.0f);
+  glVertex3f(-1.0f, -1.0f, 1.0f);
+  glVertex3f(1.0f, 1.0f, 1.0f);
+  glVertex3f(1.0f, -1.0f, 1.0f);
+  glEnd();
+
   // Magenta, back
   glBegin(GL_TRIANGLE_STRIP);
   glColor3f(1.0f, 0.0f, 1.0f);
-  glNormal3f(1.0f, 0.0f, 0.0f);
+  glNormal3f(0.0f, 0.0f, -1.0f);
 
-  glVertex3f(1.0f, 1.0f, 1.0f);
-  glVertex3f(1.0f, -1.0f, 1.0f);
-  glVertex3f(1.0f, 1.0f, -1.0f);
+  glVertex3f(-1.0f, -1.0f, -1.0f);
+  glVertex3f(-1.0f, 1.0f, -1.0f);
   glVertex3f(1.0f, -1.0f, -1.0f);
+  glVertex3f(1.0f, 1.0f, -1.0f);
   glEnd();
 }
 
