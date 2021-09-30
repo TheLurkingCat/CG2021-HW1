@@ -13,8 +13,8 @@ glm::quat Cube::base_rotation[3] = {glm::angleAxis(utils::PI_2<float>() / rotati
                                     glm::angleAxis(utils::PI_2<float>() / rotation_speed, glm::vec3(0, 0, 1))};
 
 Cube::Cube(glm::vec3 _position) noexcept
-    : position(_position), rotation(1, 0, 0, 0), rotation_progress(rotation_speed) {
-  translation = glm::translate(glm::mat4(1.0f), position * scale);
+    : position(_position), rotation(glm::identity<glm::quat>()), rotation_progress(rotation_speed) {
+  translation = glm::translate(glm::identity<glm::mat4>(), position * scale);
 }
 
 void Cube::setupModel() noexcept {
@@ -25,11 +25,19 @@ void Cube::setupModel() noexcept {
     } else {
       --rotation_progress;
       // TODO: Update rotation
+      // Hint: rotation_direction is std::optional, you can treat it as a pointer like object.
+      //   use *rotation_direction to access the value, and rotation_direction.has_value() to check if it is 'NULL'
+      //   https://en.cppreference.com/w/cpp/utility/optional
       rotation = base_rotation[*rotation_direction] * rotation;
     }
   }
   // TODO: Update model matrix
-  // Hint: mat4_cast, glMultMatrixf, value_ptr
+  // Hint: glMultMatrix  (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glMultMatrix.xml)
+  // Note:
+  //   1. How to transform quaternion into glm::mat4 rotation_matrix?
+  //     -> glm::mat4 rotation_matrix = glm::mat4_cast(rotation)
+  //   2. How to access float* pointer of glm::mat4 matrix?
+  //     -> const float * ptr = glm::value_ptr(matrix)
   glm::mat4 model = glm::mat4_cast(rotation) * translation;
   glMultMatrixf(glm::value_ptr(model));
 }
@@ -45,6 +53,18 @@ void Cube::draw() const noexcept {
   glVertex3f(1.0f, 1.0f, -1.0f);
   glVertex3f(1.0f, 1.0f, 1.0f);
   glEnd();
+  // TODO: Render other 5 face
+  //       1. Setup color
+  //       2. Setup normal
+  //       3. Setup vertices
+  //       You must use one of these enum in glBegin call (No GL_QUADS)
+  //       GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY
+  // Hint:
+  //       glBegin/glEnd  (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glBegin.xml)
+  //       glColor        (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glColor.xml)
+  //       glNormal       (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glNormal.xml)
+  //       glVertex       (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glVertex.xml)
+  // Note: The sample code is not optimized, you can use 14 glVertex call to draw a cube using GL_TRIANGLE_STRIP
 
   // Orange, bottom
   glBegin(GL_TRIANGLE_STRIP);
@@ -58,8 +78,6 @@ void Cube::draw() const noexcept {
   glEnd();
 
   // Red, right
-  // TODO: Render right face
-  // Hint: glBegin, glColor3f, glNormal3f, glVertex3f, glEnd
   glBegin(GL_TRIANGLE_STRIP);
   glColor3f(1.0f, 0.0f, 0.0f);
   glNormal3f(1.0f, 0.0f, 0.0f);
