@@ -173,8 +173,8 @@ int main() {
   glEnable(GL_LIGHT0);
   glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
   const float light_pos[] = {0.0f, 1.0f, 2.0f, 0.0f};
-  const float light_ambient[] = {0.1f, 0.1f, 0.1f, 1.0f};
-  const float light_diffuse[] = {0.5f, 0.5f, 0.5f, 1.0f};
+  const float light_ambient[] = {0.2f, 0.2f, 0.2f, 1.0f};
+  const float light_diffuse[] = {0.8f, 0.8f, 0.8f, 1.0f};
   glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);

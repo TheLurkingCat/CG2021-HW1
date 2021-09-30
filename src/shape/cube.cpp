@@ -65,9 +65,9 @@ void Cube::draw() const noexcept {
   //       glNormal       (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glNormal.xml)
   //       glVertex       (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glVertex.xml)
 
-  // Orange, bottom
+  // Blue, bottom
   glBegin(GL_TRIANGLE_STRIP);
-  glColor3f(1.0f, 0.5f, 0.0f);
+  glColor3f(0.0f, 0.0f, 1.0f);
   glNormal3f(0.0f, -1.0f, 0.0f);
 
   glVertex3f(-1.0f, -1.0f, 1.0f);
@@ -87,9 +87,9 @@ void Cube::draw() const noexcept {
   glVertex3f(1.0f, -1.0f, -1.0f);
   glEnd();
 
-  // Yellow, left
+  // Orange, left
   glBegin(GL_TRIANGLE_STRIP);
-  glColor3f(1.0f, 1.0f, 0.0f);
+  glColor3f(1.0f, 0.5f, 0.0f);
   glNormal3f(-1.0f, 0.0f, 0.0f);
 
   glVertex3f(-1.0f, 1.0f, -1.0f);
@@ -98,9 +98,9 @@ void Cube::draw() const noexcept {
   glVertex3f(-1.0f, -1.0f, 1.0f);
   glEnd();
 
-  // Blue, front
+  // Yellow, front
   glBegin(GL_TRIANGLE_STRIP);
-  glColor3f(0.0f, 0.0f, 1.0f);
+  glColor3f(1.0f, 1.0f, 0.0f);
   glNormal3f(0.0f, 0.0f, 1.0f);
 
   glVertex3f(-1.0f, 1.0f, 1.0f);
@@ -109,9 +109,9 @@ void Cube::draw() const noexcept {
   glVertex3f(1.0f, -1.0f, 1.0f);
   glEnd();
 
-  // Magenta, back
+  // White, back
   glBegin(GL_TRIANGLE_STRIP);
-  glColor3f(1.0f, 0.0f, 1.0f);
+  glColor3f(1.0f, 1.0f, 1.0f);
   glNormal3f(0.0f, 0.0f, -1.0f);
 
   glVertex3f(-1.0f, -1.0f, -1.0f);
