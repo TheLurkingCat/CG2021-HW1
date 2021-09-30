@@ -6,9 +6,9 @@
 #include "camera/camera.h"
 
 namespace graphics::camera {
-class QuaternionCamera : public Camera {
+class QuaternionCamera final : public Camera  {
  public:
-  QuaternionCamera(glm::vec3 _position) : Camera(_position), rotation(1, 0, 0, 0) {}
+  explicit QuaternionCamera(glm::vec3 _position) : Camera(_position), rotation(glm::identity<glm::quat>()) {}
   void move(GLFWwindow* window) override;
   void updateView() override;
   void updateProjection(float aspectRatio) override;
@@ -16,6 +16,6 @@ class QuaternionCamera : public Camera {
  private:
   glm::quat rotation;
   constexpr static float keyboardMoveSpeed = 10.0f;
-  constexpr static float mouseMoveSpeed = 0.05f;
+  constexpr static float mouseMoveSpeed = 0.1f;
 };
 }  // namespace graphics::camera

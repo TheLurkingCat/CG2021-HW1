@@ -7,7 +7,7 @@ namespace graphics::camera {
 
 class Camera {
  public:
-  Camera(glm::vec3 position);
+  explicit Camera(glm::vec3 position);
   virtual ~Camera() = default;
 
   const float* getProjectionMatrix() const { return glm::value_ptr(projectionMatrix); }

@@ -3,6 +3,8 @@
 #include "utils.h"
 
 namespace graphics::shape {
+
+enum class Axis { X = 0, Y = 1, Z = 2 };
 class Shape {
  public:
   virtual ~Shape() = default;
