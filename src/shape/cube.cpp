@@ -64,7 +64,6 @@ void Cube::draw() const noexcept {
   //       glColor        (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glColor.xml)
   //       glNormal       (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glNormal.xml)
   //       glVertex       (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glVertex.xml)
-  // Note: The sample code is not optimized, you can use 14 glVertex call to draw a cube using GL_TRIANGLE_STRIP
 
   // Orange, bottom
   glBegin(GL_TRIANGLE_STRIP);
