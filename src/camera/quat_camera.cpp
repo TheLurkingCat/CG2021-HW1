@@ -56,6 +56,6 @@ void QuaternionCamera::updateView() {
 }
 
 void QuaternionCamera::updateProjection(float aspectRatio) {
-  projectionMatrix = glm::perspective(45.0f, aspectRatio, 0.1f, 1000.0f);
+  projectionMatrix = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
 }
 }  // namespace graphics::camera
