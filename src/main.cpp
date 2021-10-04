@@ -150,7 +150,12 @@ void resizeCallback(GLFWwindow* window, int width, int height) {
 
 int main() {
   // Initialize OpenGL context, details are wrapped in class.
+#ifdef __APPLE__
+  // MacOS need explicit request legacy support
+  OpenGLContext::createContext(21, GLFW_OPENGL_ANY_PROFILE);
+#else
   OpenGLContext::createContext(41, GLFW_OPENGL_COMPAT_PROFILE);
+#endif
   GLFWwindow* window = OpenGLContext::getWindow();
   glfwSetWindowTitle(window, "HW1");
   glfwSetKeyCallback(window, keyCallback);
@@ -172,7 +177,7 @@ int main() {
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-  const float light_pos[] = {0.0f, 1.0f, 2.0f, 0.0f};
+  const float light_pos[] = {2.0f, 1.0f, 2.0f, 0.0f};
   const float light_ambient[] = {0.2f, 0.2f, 0.2f, 1.0f};
   const float light_diffuse[] = {0.8f, 0.8f, 0.8f, 1.0f};
   glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
@@ -183,7 +188,7 @@ int main() {
   int current_tick = 0;
   float body_tick = 0;
   // Setup camera.
-  graphics::camera::QuaternionCamera camera(glm::vec3(0, 0, 10));
+  graphics::camera::QuaternionCamera camera(glm::vec3(0, 0, 15));
   camera.initialize(OpenGLContext::getAspectRatio());
   glfwSetWindowUserPointer(window, &camera);
   // Generate all mini-cubes
