@@ -13,9 +13,10 @@ glm::quat Cube::base_rotation[3] = {glm::angleAxis(utils::PI_2<float>() / rotati
                                     glm::angleAxis(utils::PI_2<float>() / rotation_speed, glm::vec3(0, 0, 1))};
 
 Cube::Cube(glm::vec3 _position) noexcept
-    : position(_position), rotation(glm::identity<glm::quat>()), rotation_progress(rotation_speed) {
-  translation = glm::translate(glm::identity<glm::mat4>(), position * scale);
-}
+    : rotation_progress(rotation_speed),
+      position(_position),
+      translation(glm::translate(glm::identity<glm::mat4>(), position * scale)),
+      rotation(glm::identity<glm::quat>()) {}
 
 void Cube::setupModel() noexcept {
   if (rotation_direction) {
