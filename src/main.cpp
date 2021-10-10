@@ -40,104 +40,6 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
   if (!idle) return;
   // TODO: Detect key-events, perform rotation
   // Hint: Key  (https://www.glfw.org/docs/3.3/group__keys.html)
-  switch (key) {
-    case GLFW_KEY_F:
-      // f
-      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getPosition(Axis::Z) == 1) {
-          cube->rotate(Axis::Z);
-        }
-      });
-      break;
-    case GLFW_KEY_C:
-      // c
-      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getPosition(Axis::Z) == 0) {
-          cube->rotate(Axis::Z);
-        }
-      });
-      break;
-    case GLFW_KEY_B:
-      // b
-      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getPosition(Axis::Z) == -1) {
-          cube->rotate(Axis::Z);
-        }
-      });
-      break;
-    case GLFW_KEY_U:
-      // u
-      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getPosition(Axis::Y) == 1) {
-          cube->rotate(Axis::Y);
-        }
-      });
-      break;
-    case GLFW_KEY_E:
-      // e
-      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getPosition(Axis::Y) == 0) {
-          cube->rotate(Axis::Y);
-        }
-      });
-      break;
-    case GLFW_KEY_G:
-      // g
-      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getPosition(Axis::Y) == -1) {
-          cube->rotate(Axis::Y);
-        }
-      });
-      break;
-    case GLFW_KEY_L:
-      // l
-      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getPosition(Axis::X) == -1) {
-          cube->rotate(Axis::X);
-        }
-      });
-      break;
-    case GLFW_KEY_M:
-      // m
-      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getPosition(Axis::X) == 0) {
-          cube->rotate(Axis::X);
-        }
-      });
-      break;
-    case GLFW_KEY_R:
-      // r
-      std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) {
-        if (cube->getPosition(Axis::X) == 1) {
-          cube->rotate(Axis::X);
-        }
-      });
-      break;
-    case GLFW_KEY_Q:
-      // q
-      is_auto_rotate = !is_auto_rotate;
-      break;
-    case GLFW_KEY_X:
-      // x
-      if (!is_auto_rotate) {
-        std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) { cube->rotate(Axis::X); });
-      }
-      break;
-    case GLFW_KEY_Y:
-      // y
-      if (!is_auto_rotate) {
-        std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) { cube->rotate(Axis::Y); });
-      }
-      break;
-    case GLFW_KEY_Z:
-      // z
-      if (!is_auto_rotate) {
-        std::for_each(cubes.begin(), cubes.end(), [](CubePTR& cube) { cube->rotate(Axis::Z); });
-      }
-      break;
-    default:
-      break;
-  }
 }
 
 void resizeCallback(GLFWwindow* window, int width, int height) {
@@ -173,16 +75,10 @@ int main() {
   //       glEnable        (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glEnable.xml)
   //       glColorMaterial (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glColorMaterial.xml)
   //       glLight         (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glLight.xml)
-  glEnable(GL_COLOR_MATERIAL);
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
-  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
   const float light_pos[] = {2.0f, 1.0f, 2.0f, 0.0f};
   const float light_ambient[] = {0.2f, 0.2f, 0.2f, 1.0f};
   const float light_diffuse[] = {0.8f, 0.8f, 0.8f, 1.0f};
-  glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-  glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+
   // Some parameters.
   int speed = OpenGLContext::getRefreshRate() * 10;
   int current_tick = 0;
@@ -227,12 +123,7 @@ int main() {
     //       2. You can use glPushMatrix, glPopMatrix to 'cache' current matrix.
     // Hint:
     //       glPushMatrix/glPopMatrix   (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glPushMatrix.xml)
-    for (const auto& cube : cubes) {
-      glPushMatrix();
-      cube->setupModel();
-      cube->draw();
-      glPopMatrix();
-    }
+
 #ifdef __APPLE__
     // Some platform need explicit glFlush
     glFlush();

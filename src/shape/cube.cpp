@@ -29,7 +29,6 @@ void Cube::setupModel() noexcept {
       // Hint: rotation_direction is std::optional, you can treat it as a pointer like object.
       //   use *rotation_direction to access the value, and rotation_direction.has_value() to check if it is 'NULL'
       //   https://en.cppreference.com/w/cpp/utility/optional
-      rotation = base_rotation[*rotation_direction] * rotation;
     }
   }
   // TODO: Update model matrix
@@ -39,8 +38,6 @@ void Cube::setupModel() noexcept {
   //     -> glm::mat4 rotation_matrix = glm::mat4_cast(rotation)
   //   2. How to access float* pointer of glm::mat4 matrix?
   //     -> const float * ptr = glm::value_ptr(matrix)
-  glm::mat4 model = glm::mat4_cast(rotation) * translation;
-  glMultMatrixf(glm::value_ptr(model));
 }
 
 void Cube::draw() const noexcept {
@@ -65,61 +62,6 @@ void Cube::draw() const noexcept {
   //       glColor        (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glColor.xml)
   //       glNormal       (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glNormal.xml)
   //       glVertex       (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glVertex.xml)
-
-  // Blue, bottom
-  glBegin(GL_TRIANGLE_STRIP);
-  glColor3f(0.0f, 0.0f, 1.0f);
-  glNormal3f(0.0f, -1.0f, 0.0f);
-
-  glVertex3f(-1.0f, -1.0f, 1.0f);
-  glVertex3f(-1.0f, -1.0f, -1.0f);
-  glVertex3f(1.0f, -1.0f, 1.0f);
-  glVertex3f(1.0f, -1.0f, -1.0f);
-  glEnd();
-
-  // Red, right
-  glBegin(GL_TRIANGLE_STRIP);
-  glColor3f(1.0f, 0.0f, 0.0f);
-  glNormal3f(1.0f, 0.0f, 0.0f);
-
-  glVertex3f(1.0f, 1.0f, 1.0f);
-  glVertex3f(1.0f, -1.0f, 1.0f);
-  glVertex3f(1.0f, 1.0f, -1.0f);
-  glVertex3f(1.0f, -1.0f, -1.0f);
-  glEnd();
-
-  // Orange, left
-  glBegin(GL_TRIANGLE_STRIP);
-  glColor3f(1.0f, 0.5f, 0.0f);
-  glNormal3f(-1.0f, 0.0f, 0.0f);
-
-  glVertex3f(-1.0f, 1.0f, -1.0f);
-  glVertex3f(-1.0f, -1.0f, -1.0f);
-  glVertex3f(-1.0f, 1.0f, 1.0f);
-  glVertex3f(-1.0f, -1.0f, 1.0f);
-  glEnd();
-
-  // Yellow, front
-  glBegin(GL_TRIANGLE_STRIP);
-  glColor3f(1.0f, 1.0f, 0.0f);
-  glNormal3f(0.0f, 0.0f, 1.0f);
-
-  glVertex3f(-1.0f, 1.0f, 1.0f);
-  glVertex3f(-1.0f, -1.0f, 1.0f);
-  glVertex3f(1.0f, 1.0f, 1.0f);
-  glVertex3f(1.0f, -1.0f, 1.0f);
-  glEnd();
-
-  // White, back
-  glBegin(GL_TRIANGLE_STRIP);
-  glColor3f(1.0f, 1.0f, 1.0f);
-  glNormal3f(0.0f, 0.0f, -1.0f);
-
-  glVertex3f(-1.0f, -1.0f, -1.0f);
-  glVertex3f(-1.0f, 1.0f, -1.0f);
-  glVertex3f(1.0f, -1.0f, -1.0f);
-  glVertex3f(1.0f, 1.0f, -1.0f);
-  glEnd();
 }
 
 void Cube::rotate(Axis axis) { rotation_direction = static_cast<int>(axis); }
