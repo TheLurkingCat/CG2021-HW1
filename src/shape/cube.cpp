@@ -3,11 +3,12 @@
 #include <glad/gl.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "context_manager.h"
 #include "utils.h"
 
 namespace graphics::shape {
-int Cube::rotation_speed = OpenGLContext::getRefreshRate() * 2;
+// TODO (optional): If your cube rotates very slow or fast, you can change rotation_speed.
+int Cube::rotation_speed = 60;
+
 glm::quat Cube::base_rotation[3] = {glm::angleAxis(utils::PI_2<float>() / rotation_speed, glm::vec3(1, 0, 0)),
                                     glm::angleAxis(utils::PI_2<float>() / rotation_speed, glm::vec3(0, 1, 0)),
                                     glm::angleAxis(utils::PI_2<float>() / rotation_speed, glm::vec3(0, 0, 1))};
@@ -25,19 +26,23 @@ void Cube::setupModel() noexcept {
       rotation_progress = rotation_speed;
     } else {
       --rotation_progress;
-      // TODO: Update rotation
-      // Hint: rotation_direction is std::optional, you can treat it as a pointer like object.
-      //   use *rotation_direction to access the value, and rotation_direction.has_value() to check if it is 'NULL'
-      //   https://en.cppreference.com/w/cpp/utility/optional
+      rotation = base_rotation[*rotation_direction] * rotation;
     }
   }
   // TODO: Update model matrix
-  // Hint: glMultMatrix  (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glMultMatrix.xml)
+  //       1. You need this->rotation and this->translation
+  //       2. Your model matrix should translate first, then rotate
+  //       3. Multiply current ModelView matrix with your model matrix using glMultMatrix
+  // Hint:
+  //       glMultMatrix  (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glMultMatrix.xml)
   // Note:
-  //   1. How to transform quaternion into glm::mat4 rotation_matrix?
-  //     -> glm::mat4 rotation_matrix = glm::mat4_cast(rotation)
-  //   2. How to access float* pointer of glm::mat4 matrix?
-  //     -> const float * ptr = glm::value_ptr(matrix)
+  //       1. How to transform quaternion into a 4x4 rotation_matrix?
+  //           -> glm::mat4 rotation_matrix = glm::mat4_cast(rotation)
+  //       2. How to access float* pointer of glm::mat4 matrix?
+  //           -> const float * ptr = glm::value_ptr(matrix)
+  //       You can implement this section using less than 5 lines of code.
+  glm::mat4 model = glm::mat4_cast(rotation) * translation;
+  glMultMatrixf(glm::value_ptr(model));
 }
 
 void Cube::draw() const noexcept {
@@ -52,9 +57,9 @@ void Cube::draw() const noexcept {
   glVertex3f(1.0f, 1.0f, 1.0f);
   glEnd();
   // TODO: Render other 5 face
-  //       1. Setup color
-  //       2. Setup normal
-  //       3. Setup vertices
+  //       1. Setup vertex color
+  //       2. Setup vertex normal
+  //       3. Setup vertex position
   //       You must use one of these enum in glBegin call (No GL_QUADS)
   //       GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, GL_TRIANGLE_STRIP_ADJACENCY, GL_TRIANGLES_ADJACENCY
   // Hint:
@@ -62,6 +67,63 @@ void Cube::draw() const noexcept {
   //       glColor        (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glColor.xml)
   //       glNormal       (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glNormal.xml)
   //       glVertex       (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glVertex.xml)
+  // Note:
+  //       You can copy-paste sample code above, but you must change its parameters to render correctly.
+
+  // Blue, bottom
+  glBegin(GL_TRIANGLE_STRIP);
+  glColor3f(0.0f, 0.0f, 1.0f);
+  glNormal3f(0.0f, -1.0f, 0.0f);
+
+  glVertex3f(-1.0f, -1.0f, 1.0f);
+  glVertex3f(-1.0f, -1.0f, -1.0f);
+  glVertex3f(1.0f, -1.0f, 1.0f);
+  glVertex3f(1.0f, -1.0f, -1.0f);
+  glEnd();
+
+  // Red, right
+  glBegin(GL_TRIANGLE_STRIP);
+  glColor3f(1.0f, 0.0f, 0.0f);
+  glNormal3f(1.0f, 0.0f, 0.0f);
+
+  glVertex3f(1.0f, 1.0f, 1.0f);
+  glVertex3f(1.0f, -1.0f, 1.0f);
+  glVertex3f(1.0f, 1.0f, -1.0f);
+  glVertex3f(1.0f, -1.0f, -1.0f);
+  glEnd();
+
+  // Orange, left
+  glBegin(GL_TRIANGLE_STRIP);
+  glColor3f(1.0f, 0.5f, 0.0f);
+  glNormal3f(-1.0f, 0.0f, 0.0f);
+
+  glVertex3f(-1.0f, 1.0f, -1.0f);
+  glVertex3f(-1.0f, -1.0f, -1.0f);
+  glVertex3f(-1.0f, 1.0f, 1.0f);
+  glVertex3f(-1.0f, -1.0f, 1.0f);
+  glEnd();
+
+  // Yellow, front
+  glBegin(GL_TRIANGLE_STRIP);
+  glColor3f(1.0f, 1.0f, 0.0f);
+  glNormal3f(0.0f, 0.0f, 1.0f);
+
+  glVertex3f(-1.0f, 1.0f, 1.0f);
+  glVertex3f(-1.0f, -1.0f, 1.0f);
+  glVertex3f(1.0f, 1.0f, 1.0f);
+  glVertex3f(1.0f, -1.0f, 1.0f);
+  glEnd();
+
+  // White, back
+  glBegin(GL_TRIANGLE_STRIP);
+  glColor3f(1.0f, 1.0f, 1.0f);
+  glNormal3f(0.0f, 0.0f, -1.0f);
+
+  glVertex3f(-1.0f, -1.0f, -1.0f);
+  glVertex3f(-1.0f, 1.0f, -1.0f);
+  glVertex3f(1.0f, -1.0f, -1.0f);
+  glVertex3f(1.0f, 1.0f, -1.0f);
+  glEnd();
 }
 
 void Cube::rotate(Axis axis) { rotation_direction = static_cast<int>(axis); }

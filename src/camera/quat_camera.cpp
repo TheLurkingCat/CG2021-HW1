@@ -49,13 +49,30 @@ void QuaternionCamera::move(GLFWwindow* window) {
 }
 
 void QuaternionCamera::updateView() {
-  front = rotation * glm::vec3(0, 0, -1);
-  up = rotation * glm::vec3(0, 1, 0);
+  constexpr glm::vec3 original_front(0, 0, -1);
+  constexpr glm::vec3 original_up(0, 1, 0);
+  // TODO: Calculate lookAt matrix
+  // Hint:
+  //       1. Rotate original_front and original_up using this->rotation.
+  //       2. Calculate right vector by cross product.
+  //       3. Calculate view matrix.
+  //       4. You can calculate the matrix by hand, or use
+  //       glm::lookAt (https://glm.g-truc.net/0.9.9/api/a00247.html#gaa64aa951a0e99136bba9008d2b59c78e)
+  // Note: You should not use gluLookAt
+  front = rotation * original_front;
+  up = rotation * original_up;
   right = glm::cross(front, up);
   viewMatrix = glm::lookAt(position, position + front, up);
 }
 
 void QuaternionCamera::updateProjection(float aspectRatio) {
-  projectionMatrix = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
+  constexpr float FOV = glm::radians(45.0f);
+  constexpr float zNear = 0.1f;
+  constexpr float zFar = 100.0f;
+  // TODO: Calculate perspective projection matrix
+  // Hint: You can calculate the matrix by hand, or use
+  //       glm::perspective (https://glm.g-truc.net/0.9.9/api/a00243.html#ga747c8cf99458663dd7ad1bb3a2f07787)
+  // Note: You should not use gluPerspective
+  projectionMatrix = glm::perspective(FOV, aspectRatio, zNear, zFar);
 }
 }  // namespace graphics::camera
