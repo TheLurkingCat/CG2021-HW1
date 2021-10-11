@@ -145,7 +145,7 @@ int main() {
   // MacOS need explicit request legacy support
   OpenGLContext::createContext(21, GLFW_OPENGL_ANY_PROFILE);
 #else
-  OpenGLContext::createContext(33, GLFW_OPENGL_COMPAT_PROFILE);
+  OpenGLContext::createContext(43, GLFW_OPENGL_COMPAT_PROFILE);
 #endif
   GLFWwindow* window = OpenGLContext::getWindow();
   glfwSetWindowTitle(window, "HW1");
