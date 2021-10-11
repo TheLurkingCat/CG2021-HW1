@@ -7,7 +7,6 @@
 - [glad](https://github.com/Dav1dde/glad)
 - [glfw](https://github.com/glfw/glfw)
 - [glm](https://github.com/g-truc/glm)
-- [wuffs](https://github.com/google/wuffs)
 
 ### Dependencies for Windows
 
@@ -39,16 +38,14 @@ Build in release mode
 ```bash=
 cmake -S . -B build -D CMAKE_BUILD_TYPE=Release
 cmake --build build --config Release --parallel 8
-cd bin
-./HW1
+bin/HW1
 ```
 
 Build in debug mode
 ```bash=
 cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug
 cmake --build build --config Debug --parallel 8
-cd bin
-./HW1
+bin/HW1
 ```
 
 ### Visual Studio 2019
