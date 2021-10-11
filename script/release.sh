@@ -1,4 +1,15 @@
 #!/bin/bash
+if [[ !(-d src) ]]; then
+  cd ..
+fi
+
+if [[ !(-d src) ]]; then
+  echo "Please run this script in project root folder."
+  exit 1
+fi
+
+git apply script/homework.patch
+
 zip -r9 HW1.zip \
 extern/glad \
 extern/glfw/CMake \
@@ -22,3 +33,4 @@ src \
 CMakeLists.txt \
 README.md
 
+git apply -R script/homework.patch
