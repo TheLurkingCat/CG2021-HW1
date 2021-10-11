@@ -8,28 +8,28 @@ if (!(Test-Path -Path "src")) {
 }
 
 $compressfiles = `
-"extern/glad" `
-"extern/glfw/CMake" `
-"extern/glfw/deps/mingw" `
-"extern/glfw/deps/vs2008" `
-"extern/glfw/include" `
-"extern/glfw/src" `
-"extern/glfw/LICENSE.md" `
-"extern/glfw/CMakeLists.txt" `
-"extern/glm/cmake" `
-"extern/glm/glm" `
-"extern/glm/CMakeLists.txt" `
-"extern/glm/copying.txt" `
-"script/pack.ps1" `
-"script/pack.sh" `
-"cmake" `
-"vs2019/HW1.sln" `
-"vs2019/HW1" `
-"vs2019/glfw" `
-"include" `
-"src" `
-".clang-format" `
-"CMakeLists.txt" `
+"extern/glad", `
+"extern/glfw/CMake", `
+"extern/glfw/deps/mingw", `
+"extern/glfw/deps/vs2008", `
+"extern/glfw/include", `
+"extern/glfw/src", `
+"extern/glfw/LICENSE.md", `
+"extern/glfw/CMakeLists.txt", `
+"extern/glm/cmake", `
+"extern/glm/glm", `
+"extern/glm/CMakeLists.txt", `
+"extern/glm/copying.txt", `
+"script/pack.ps1", `
+"script/pack.sh", `
+"cmake", `
+"vs2019/HW1.sln", `
+"vs2019/HW1", `
+"vs2019/glfw", `
+"include", `
+"src", `
+".clang-format", `
+"CMakeLists.txt", `
 "README.md"
 
 $compress = @{
@@ -37,4 +37,4 @@ $compress = @{
   CompressionLevel = "Optimal"
   DestinationPath = "HW1.zip"
 }
-Compress-Archive @compress
+Compress-Archive -Force @compress
