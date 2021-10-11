@@ -11,6 +11,8 @@ extern/glm/cmake `
 extern/glm/glm `
 extern/glm/CMakeLists.txt `
 extern/glm/copying.txt `
+script/pack.ps1 `
+script/pack.sh `
 cmake `
 vs2019/HW1.sln `
 vs2019/HW1 `
