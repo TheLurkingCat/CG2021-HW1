@@ -1,0 +1,205 @@
+diff --git a/src/camera/quat_camera.cpp b/src/camera/quat_camera.cpp
+index fd6cd53..b125067 100644
+--- a/src/camera/quat_camera.cpp
++++ b/src/camera/quat_camera.cpp
+@@ -59,10 +59,7 @@ void QuaternionCamera::updateView() {
+   //       4. You can calculate the matrix by hand, or use
+   //       glm::lookAt (https://glm.g-truc.net/0.9.9/api/a00247.html#gaa64aa951a0e99136bba9008d2b59c78e)
+   // Note: You should not use gluLookAt
+-  front = rotation * original_front;
+-  up = rotation * original_up;
+-  right = glm::cross(front, up);
+-  viewMatrix = glm::lookAt(position, position + front, up);
++  viewMatrix = glm::identity<glm::mat4>();
+ }
+ 
+ void QuaternionCamera::updateProjection(float aspectRatio) {
+@@ -73,6 +70,6 @@ void QuaternionCamera::updateProjection(float aspectRatio) {
+   // Hint: You can calculate the matrix by hand, or use
+   //       glm::perspective (https://glm.g-truc.net/0.9.9/api/a00243.html#ga747c8cf99458663dd7ad1bb3a2f07787)
+   // Note: You should not use gluPerspective
+-  projectionMatrix = glm::perspective(FOV, aspectRatio, zNear, zFar);
++  projectionMatrix = glm::identity<glm::mat4>();
+ }
+ }  // namespace graphics::camera
+diff --git a/src/main.cpp b/src/main.cpp
+index a9d451d..bb1d610 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -42,90 +42,6 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int) {
+   //       You should finish your cube rendering first.
+   //       Otherwise you will spend a lot of time debugging this with a black screen.
+   switch (key) {
+-    case GLFW_KEY_F:
+-      // f
+-      std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) {
+-        if (cube->getPosition(Axis::Z) == 1) {
+-          cube->rotate(Axis::Z);
+-        }
+-      });
+-      break;
+-    case GLFW_KEY_C:
+-      // c
+-      std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) {
+-        if (cube->getPosition(Axis::Z) == 0) {
+-          cube->rotate(Axis::Z);
+-        }
+-      });
+-      break;
+-    case GLFW_KEY_B:
+-      // b
+-      std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) {
+-        if (cube->getPosition(Axis::Z) == -1) {
+-          cube->rotate(Axis::Z);
+-        }
+-      });
+-      break;
+-    case GLFW_KEY_U:
+-      // u
+-      std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) {
+-        if (cube->getPosition(Axis::Y) == 1) {
+-          cube->rotate(Axis::Y);
+-        }
+-      });
+-      break;
+-    case GLFW_KEY_E:
+-      // e
+-      std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) {
+-        if (cube->getPosition(Axis::Y) == 0) {
+-          cube->rotate(Axis::Y);
+-        }
+-      });
+-      break;
+-    case GLFW_KEY_G:
+-      // g
+-      std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) {
+-        if (cube->getPosition(Axis::Y) == -1) {
+-          cube->rotate(Axis::Y);
+-        }
+-      });
+-      break;
+-    case GLFW_KEY_L:
+-      // l
+-      std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) {
+-        if (cube->getPosition(Axis::X) == -1) {
+-          cube->rotate(Axis::X);
+-        }
+-      });
+-      break;
+-    case GLFW_KEY_M:
+-      // m
+-      std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) {
+-        if (cube->getPosition(Axis::X) == 0) {
+-          cube->rotate(Axis::X);
+-        }
+-      });
+-      break;
+-    case GLFW_KEY_R:
+-      // r
+-      std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) {
+-        if (cube->getPosition(Axis::X) == 1) {
+-          cube->rotate(Axis::X);
+-        }
+-      });
+-      break;
+-    case GLFW_KEY_X:
+-      // x
+-      std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) { cube->rotate(Axis::X); });
+-      break;
+-    case GLFW_KEY_Y:
+-      // y
+-      std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) { cube->rotate(Axis::Y); });
+-      break;
+-    case GLFW_KEY_Z:
+-      // z
+-      std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) { cube->rotate(Axis::Z); });
+-      break;
+     default:
+       break;
+   }
+@@ -190,12 +106,6 @@ int main() {
+     //       glPushMatrix/glPopMatrix   (https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glPushMatrix.xml)
+     // Note:
+     //       You can implement this section using less than 10 lines of code.
+-    std::for_each(cubes.begin(), cubes.end(), [](const auto& cube) {
+-      glPushMatrix();
+-      cube->setupModel();
+-      cube->draw();
+-      glPopMatrix();
+-    });
+ #ifdef __APPLE__
+     // Some platform need explicit glFlush
+     glFlush();
+diff --git a/src/shape/cube.cpp b/src/shape/cube.cpp
+index c4c8ccd..9c6426a 100644
+--- a/src/shape/cube.cpp
++++ b/src/shape/cube.cpp
+@@ -41,8 +41,6 @@ void Cube::setupModel() noexcept {
+   //       2. How to access float* pointer of glm::mat4 matrix?
+   //           -> const float * ptr = glm::value_ptr(matrix)
+   //       You can implement this section using less than 5 lines of code.
+-  glm::mat4 model = glm::mat4_cast(rotation) * translation;
+-  glMultMatrixf(glm::value_ptr(model));
+ }
+ 
+ void Cube::draw() const noexcept {
+@@ -71,59 +69,14 @@ void Cube::draw() const noexcept {
+   //       You can copy-paste sample code above, but you must change its parameters to render correctly.
+ 
+   // Blue, bottom
+-  glBegin(GL_TRIANGLE_STRIP);
+-  glColor3f(0.0f, 0.0f, 1.0f);
+-  glNormal3f(0.0f, -1.0f, 0.0f);
+-
+-  glVertex3f(-1.0f, -1.0f, 1.0f);
+-  glVertex3f(-1.0f, -1.0f, -1.0f);
+-  glVertex3f(1.0f, -1.0f, 1.0f);
+-  glVertex3f(1.0f, -1.0f, -1.0f);
+-  glEnd();
+ 
+   // Red, right
+-  glBegin(GL_TRIANGLE_STRIP);
+-  glColor3f(1.0f, 0.0f, 0.0f);
+-  glNormal3f(1.0f, 0.0f, 0.0f);
+-
+-  glVertex3f(1.0f, 1.0f, 1.0f);
+-  glVertex3f(1.0f, -1.0f, 1.0f);
+-  glVertex3f(1.0f, 1.0f, -1.0f);
+-  glVertex3f(1.0f, -1.0f, -1.0f);
+-  glEnd();
+ 
+   // Orange, left
+-  glBegin(GL_TRIANGLE_STRIP);
+-  glColor3f(1.0f, 0.5f, 0.0f);
+-  glNormal3f(-1.0f, 0.0f, 0.0f);
+-
+-  glVertex3f(-1.0f, 1.0f, -1.0f);
+-  glVertex3f(-1.0f, -1.0f, -1.0f);
+-  glVertex3f(-1.0f, 1.0f, 1.0f);
+-  glVertex3f(-1.0f, -1.0f, 1.0f);
+-  glEnd();
+ 
+   // Yellow, front
+-  glBegin(GL_TRIANGLE_STRIP);
+-  glColor3f(1.0f, 1.0f, 0.0f);
+-  glNormal3f(0.0f, 0.0f, 1.0f);
+-
+-  glVertex3f(-1.0f, 1.0f, 1.0f);
+-  glVertex3f(-1.0f, -1.0f, 1.0f);
+-  glVertex3f(1.0f, 1.0f, 1.0f);
+-  glVertex3f(1.0f, -1.0f, 1.0f);
+-  glEnd();
+ 
+   // White, back
+-  glBegin(GL_TRIANGLE_STRIP);
+-  glColor3f(1.0f, 1.0f, 1.0f);
+-  glNormal3f(0.0f, 0.0f, -1.0f);
+-
+-  glVertex3f(-1.0f, -1.0f, -1.0f);
+-  glVertex3f(-1.0f, 1.0f, -1.0f);
+-  glVertex3f(1.0f, -1.0f, -1.0f);
+-  glVertex3f(1.0f, 1.0f, -1.0f);
+-  glEnd();
+ }
+ 
+ void Cube::rotate(Axis axis) { rotation_direction = static_cast<int>(axis); }
