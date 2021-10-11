@@ -199,9 +199,10 @@
     <ClCompile Include="..\..\src\shape\cube.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\extern\glad\include\glad\gl.h" />
-    <ClInclude Include="..\extern\glfw\include\GLFW\glfw3.h" />
-    <ClInclude Include="..\extern\glfw\include\GLFW\glfw3native.h" />
+    <ClInclude Include="..\..\include\camera\camera.h" />
+    <ClInclude Include="..\..\include\camera\quat_camera.h" />
+    <ClInclude Include="..\..\include\shape\cube.h" />
+    <ClInclude Include="..\..\include\shape\shape.h" />
     <ClInclude Include="..\include\context_manager.h" />
     <ClInclude Include="..\include\utils.h" />
   </ItemGroup>

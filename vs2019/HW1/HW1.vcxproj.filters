@@ -9,17 +9,17 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="標頭檔\glad">
-      <UniqueIdentifier>{e4e88c92-5214-41e6-a33d-041e1315fef3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="標頭檔\glfw">
-      <UniqueIdentifier>{0ceb5d69-2349-4b06-b784-4dd9e687a913}</UniqueIdentifier>
-    </Filter>
     <Filter Include="來源檔案\camera">
       <UniqueIdentifier>{a7395f8f-7635-4906-a97e-0461ec899356}</UniqueIdentifier>
     </Filter>
     <Filter Include="來源檔案\shape">
       <UniqueIdentifier>{d8b2e208-feee-43b2-ba13-7f8834d7cdb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="標頭檔\camera">
+      <UniqueIdentifier>{27788e96-290f-4e40-9008-3c7a51d62beb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="標頭檔\shape">
+      <UniqueIdentifier>{196f6c0a-f203-4a81-b472-714a13a57674}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -40,20 +40,23 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\extern\glad\include\glad\gl.h">
-      <Filter>標頭檔\glad</Filter>
-    </ClInclude>
-    <ClInclude Include="..\extern\glfw\include\GLFW\glfw3.h">
-      <Filter>標頭檔\glfw</Filter>
-    </ClInclude>
-    <ClInclude Include="..\extern\glfw\include\GLFW\glfw3native.h">
-      <Filter>標頭檔\glfw</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\context_manager.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="..\include\utils.h">
       <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\camera\camera.h">
+      <Filter>標頭檔\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\camera\quat_camera.h">
+      <Filter>標頭檔\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\shape\cube.h">
+      <Filter>標頭檔\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\shape\shape.h">
+      <Filter>標頭檔\shape</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
