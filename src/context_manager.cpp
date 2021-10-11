@@ -130,7 +130,12 @@ OpenGLContext::OpenGLContext() {
   // Create OpenGL context
   window = glfwCreateWindow(1280, 720, "Hello World!", nullptr, nullptr);
   if (window == nullptr) {
-    THROW_EXCEPTION(std::runtime_error, "Failed to create OpenGL context!");
+    // Fallback to 3.3 first, then throw exception
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    OpenGLContext::major_version = OpenGLContext::minor_version = 3;
+    window = glfwCreateWindow(1280, 720, "Hello World!", nullptr, nullptr);
+    if (window == nullptr) THROW_EXCEPTION(std::runtime_error, "Failed to create OpenGL context!");
   }
   glfwMakeContextCurrent(window);
   glfwSwapInterval(1);
@@ -199,12 +204,18 @@ void OpenGLContext::framebufferResizeCallback(GLFWwindow*, int width, int height
 void OpenGLContext::enableDebugCallback() {
   int flags = 0;
   glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+
   if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
-    std::cout << "Debug context enabled, this may hurt performance." << std::endl;
-    std::cout << "Build in release mode to disable debugging." << std::endl;
-    glEnable(GL_DEBUG_OUTPUT);
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    glDebugMessageCallback(errorCallback, nullptr);
+    if (glDebugMessageCallback != nullptr) {
+      std::cout << "Debug context enabled, it may hurt performance." << std::endl;
+      std::cout << "Build in release mode to disable debugging." << std::endl;
+      glEnable(GL_DEBUG_OUTPUT);
+      glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+      glDebugMessageCallback(errorCallback, nullptr);
+    } else {
+      std::cout << "Your system does not support debug output." << std::endl;
+      std::cout << "Your can manually use glGetError to debug." << std::endl;
+    }
   } else {
     std::cout << "You should build with debug mode to enable this feature." << std::endl;
   }
