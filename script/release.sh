@@ -8,9 +8,8 @@ if [[ !(-d src) ]]; then
   exit 1
 fi
 
-git apply script/homework.patch
-
-zip -r9 HW1.zip \
+git apply script/homework.patch \
+&& zip -qr9 HW1.zip \
 extern/glad \
 extern/glfw/CMake \
 extern/glfw/deps/mingw \
@@ -31,6 +30,5 @@ include \
 src \
 .clang-format \
 CMakeLists.txt \
-README.md
-
-git apply -R script/homework.patch
+README.md \
+&& git apply -R script/homework.patch
