@@ -1,4 +1,4 @@
-# NYCU CG2021 Homework 1
+# NYCU CG2021 Homework 1 - TA Grader
 
 [![release](https://github.com/TheLurkingCat/CG2021-HW1/actions/workflows/build.yml/badge.svg?branch=release&event=push)](https://github.com/TheLurkingCat/CG2021-HW1/actions/workflows/build.yml)
 
@@ -32,7 +32,10 @@ On *FreeBSD*
 
 ## Build instruction
 
+
 ### CMake
+
+Use script/unzip.py to unzip all homeworks.
 
 Build in release mode
 ```bash=
@@ -41,15 +44,7 @@ cmake --build build --config Release --parallel 8
 bin/HW1
 ```
 
-Build in debug mode
-```bash=
-cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug
-cmake --build build --config Debug --parallel 8
-bin/HW1
-```
+bin/HW1 is the sample code
 
-### Visual Studio 2019
+bin/student-id is their homework
 
-- Open `vs2019/HW1.sln`
-- Select config then build (CTRL+SHIFT+B)
-- Use F5 to debug or CTRL+F5 to run.
