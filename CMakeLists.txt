@@ -14,6 +14,19 @@ if (NOT (CMAKE_BUILD_TYPE OR CMAKE_CONFIGURATION_TYPES))
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Release" "RelWithDebInfo" "MinSizeRel" "Debug")
 endif()
+
+macro(list_subdirs result curdir)
+    file(GLOB children RELATIVE ${curdir} ${curdir}/*)
+    set(dirlist "")
+    foreach(child ${children})
+        if(IS_DIRECTORY ${curdir}/${child})
+            list(APPEND dirlist ${child})
+        endif()
+    endforeach()
+    set(${result} ${dirlist})
+endmacro()
+list_subdirs(SUBDIRS ${CMAKE_CURRENT_SOURCE_DIR}/code)
+
 # Detect some compiler flags
 include(CheckCXXCompilerFlag)
 include(CheckIPOSupported)
@@ -82,6 +95,8 @@ if (MSVC)
   add_compile_options("/MP")
   # Use UTF8 charset
   add_compile_options("/utf-8")
+  # No warning
+  add_compile_options("/wd4828")
 endif()
 # Some GLFW flags
 set(GLFW_BUILD_DOCS OFF)
@@ -94,4 +109,40 @@ add_subdirectory(src)
 # Third party libs
 add_subdirectory(extern/glad)
 add_subdirectory(extern/glfw)
+if (MSVC)
+	set(BUILD_STATIC_LIBS ON)
+endif()
 add_subdirectory(extern/glm)
+
+foreach(STUDENT_ID ${SUBDIRS})
+	set(HW1_SOURCE_DIR ${CA2021_SOURCE_DIR}/code/${STUDENT_ID}/src)
+	if (NOT EXISTS ${HW1_SOURCE_DIR}/main.cpp)
+		continue()
+	endif()
+    set(HW1_SOURCE
+	  ${HW1_SOURCE_DIR}/camera/camera.cpp
+	  ${HW1_SOURCE_DIR}/camera/quat_camera.cpp
+	  ${HW1_SOURCE_DIR}/shape/cube.cpp
+	  ${HW1_SOURCE_DIR}/context_manager.cpp
+	  ${HW1_SOURCE_DIR}/main.cpp
+	)
+    add_executable(${STUDENT_ID} ${HW1_SOURCE})
+	target_include_directories(${STUDENT_ID} PRIVATE ${HW1_SOURCE_DIR}/../include)
+	# Can include glfw and glad in arbitrary order
+	target_compile_definitions(${STUDENT_ID} PRIVATE GLFW_INCLUDE_NONE)
+	# Prefer std c++20, at least need c++17 to compile
+	set_target_properties(${STUDENT_ID} PROPERTIES
+	  CXX_STANDARD 20
+	  CXX_EXTENSIONS OFF
+	)
+
+	target_link_libraries(${STUDENT_ID}
+	  PRIVATE glad
+	  PRIVATE glfw
+	)
+	if (MSVC)
+	  target_link_libraries(${STUDENT_ID} PRIVATE glm::glm_static)
+	else()
+	  target_link_libraries(${STUDENT_ID} PRIVATE glm::glm_shared)
+	endif()
+endforeach()
