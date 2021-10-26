@@ -16,7 +16,7 @@ class QuaternionCamera final : public Camera {
  private:
   glm::quat rotation;
   // TODO (optional): Change these values if your WASD or mouse move too slow or too fast.
-  constexpr static float keyboardMoveSpeed = 10.0f;
-  constexpr static float mouseMoveSpeed = 0.1f;
+  constexpr static float keyboardMoveSpeed = 0.1f;
+  constexpr static float mouseMoveSpeed = 0.001f;
 };
 }  // namespace graphics::camera
