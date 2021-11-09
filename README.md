@@ -32,6 +32,10 @@ On *FreeBSD*
 
 ## Build instruction
 
+### Clone the repository
+
+`git clone --recurse-submodules -j8 https://github.com/TheLurkingCat/CG2021-HW1.git`
+
 ### CMake
 
 Build in release mode
